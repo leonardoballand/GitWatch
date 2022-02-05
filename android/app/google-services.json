@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "942560565930",
+    "project_id": "gitwatch-8d3f9",
+    "storage_bucket": "gitwatch-8d3f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942560565930:android:958b4829d07b44728b4ed3",
+        "android_client_info": {
+          "package_name": "digital.fulll.gitwatch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942560565930-ahvkuq8fcjkghlcbb1ofj40ovv7p179u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu41MDGa9UauAjarSC1ECubdqm8nwZr14"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942560565930-ahvkuq8fcjkghlcbb1ofj40ovv7p179u.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "942560565930-m8i6v79k4e95kjhtpnm7v4l4l3o551mf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "digital.fulll.gitwatch"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

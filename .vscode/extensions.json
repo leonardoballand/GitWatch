@@ -1,0 +1,20 @@
+{
+  // Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
+  // List of extensions which should be recommended for users of this workspace.
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "streetsidesoftware.code-spell-checker",
+    "kumar-harsh.graphql-for-vscode",
+    "eamodio.gitlens",
+    "jammerware.code-guid",
+    "wix.vscode-import-cost",
+    "coenraads.bracket-pair-colorizer",
+    "orta.vscode-jest",
+    "dsznajder.es7-react-js-snippets",
+    "rohit-gohri.format-code-action",
+    "graphql.vscode-graphql",
+    "willnemo.rtlcheatsheet",
+    "christian-kohler.npm-intellisense"
+  ]
+}
