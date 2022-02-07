@@ -8,7 +8,7 @@ const getProject = async (projectId: string) => {
   });
 
   const results = await data.json();
-  console.log('results', results);
+
   return results;
 };
 

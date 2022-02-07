@@ -67,13 +67,6 @@ const App = withProviders(({loading}: IProps) => {
   useEffect(() => {
     async function initApp() {
       if (!loading) {
-        // Check if user is Firebase connected (see LoginScreen)
-        // after Github login
-        // if (userData && !auth().currentUser) {
-        //   console.log('user is not connected');
-        // } else {
-        //   console.log('user is connected', userData);
-        // }
         setInitializing(false);
       }
     }

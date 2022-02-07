@@ -30,7 +30,6 @@ function Week5HomeScreen() {
       .collection('App')
       .doc('settings')
       .onSnapshot(documentSnapshot => {
-        console.log('documentSnapshot app settings', documentSnapshot?.data());
         setAppSettings(documentSnapshot.data());
       });
 

@@ -55,7 +55,6 @@ function Week5SelectMembersScreen() {
 
   const fetchMembers = async () => {
     const data = await getOrganizationMembers('fulll');
-    console.log('members', members);
 
     const organizationsUsers = data?.edges?.map(edge => edge?.node);
     setMembers(organizationsUsers);
@@ -71,9 +70,7 @@ function Week5SelectMembersScreen() {
           justifyContent: 'center',
           alignItems: 'center',
         }}
-        onDragStart={() => {
-          console.log('start drag');
-        }}
+        onDragStart={() => {}}
         payload={item}>
         <Avatar
           style={{marginBottom: 8}}

@@ -31,11 +31,6 @@ const useToggleStates = (
   };
 
   React.useEffect(() => {
-    console.log(
-      checked,
-      Object.values(checked),
-      Object.values(checked).every(value => !!value),
-    );
     setAllChecked(
       !!Object.values(checked).length &&
         Object.values(checked).every(value => !!value),

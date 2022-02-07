@@ -108,9 +108,7 @@ function ManageAccountScreen() {
       await auth().currentUser?.delete();
       await auth().signOut();
     } catch (e) {
-      console.log('removeAccount error', e);
       if (String(e).includes('auth/requires-recent-login')) {
-        console.log();
         await auth().signInWithEmailAndPassword(data?.email!, '123456789!');
         await auth().currentUser?.delete();
         await auth().signOut();
@@ -134,7 +132,6 @@ function ManageAccountScreen() {
       .collection('Users')
       .doc(userId)
       .onSnapshot(documentSnapshot => {
-        console.log('documentsnapshot user data', documentSnapshot.data());
         setUser(documentSnapshot.data() as GitWatchUser);
       });
 

@@ -13,7 +13,6 @@ const getUserData = (): Promise<GQLUser> => {
       null,
     ).subscribe({
       next: data => {
-        console.log('data', data);
         resolve(data.viewer as GQLUser);
       },
       error: (err: any) => reject(err),

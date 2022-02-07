@@ -34,13 +34,10 @@ const RepositoriesList = ({data, error, loading, userRepositories}: IProps) => {
   };
 
   const onSelectItem = (selectedRepository: GQLRepository) => {
-    console.log('onselectitem', selectedRepository);
     const userId = auth().currentUser?.uid;
 
     const repositoryExists = isSelected(selectedRepository.id);
-    console.log('repositoryexists?', repositoryExists);
     if (repositoryExists) {
-      console.log('remove repo user');
       // remove stored repository
       const updatedRepositories = userRepositories?.filter(
         userRepository => selectedRepository.id !== userRepository.id,
@@ -51,7 +48,6 @@ const RepositoriesList = ({data, error, loading, userRepositories}: IProps) => {
         .doc(userId)
         .update({repositories: updatedRepositories});
     } else {
-      console.log('add repo user', [...userRepositories, selectedRepository]);
       // add selected repository
       firestore()
         .collection('Repositories')
@@ -62,8 +58,6 @@ const RepositoriesList = ({data, error, loading, userRepositories}: IProps) => {
 
   const renderItem = ({item}: {item: GQLRepository}) => {
     const {id, name, description} = item;
-
-    console.log('renderItem', item);
 
     return (
       <ListItem
@@ -223,7 +217,6 @@ function SelectRepositoryScreen() {
       .collection('Repositories')
       .doc(userId)
       .onSnapshot(documentSnapshot => {
-        console.log('documentsnapshot user repo', documentSnapshot.data);
         setRepositories(documentSnapshot.data()?.repositories);
       });
 

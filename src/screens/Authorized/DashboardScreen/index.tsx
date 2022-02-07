@@ -235,7 +235,6 @@ function DashboardScreen() {
       .collection('Repositories')
       .doc(userId)
       .onSnapshot(documentSnapshot => {
-        console.log('documentSnapshot repo', documentSnapshot?.data());
         setRepositories(documentSnapshot?.data()?.repositories);
       });
 

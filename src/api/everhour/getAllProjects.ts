@@ -20,7 +20,6 @@ const getAllProjects = async (
     (result: any) => result.workspaceName === organization,
   );
 
-  console.log('results', filteredResults);
   return filteredResults;
 };
 

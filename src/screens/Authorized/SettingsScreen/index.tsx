@@ -111,7 +111,7 @@ function SettingsScreen() {
         appUpdatesEnabled: updatesAlertEnabled,
       });
     } catch (e) {
-      console.log('onAppUpdatesChange', e);
+      console.log('onAppUpdatesChange error', e);
     } finally {
       setLoading(false);
     }

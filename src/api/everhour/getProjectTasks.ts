@@ -18,7 +18,6 @@ const getProjectTasks = async (
 
   const results = await data.json();
 
-  console.log('results', results);
   return results;
 };
 

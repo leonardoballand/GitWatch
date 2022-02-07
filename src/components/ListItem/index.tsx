@@ -20,9 +20,7 @@ function ListItem({
   selected = false,
   data,
 }: IListItem) {
-  console.log('listitem');
   const onItemPress = () => {
-    console.log('onitempress', data);
     onPress(data);
   };
 

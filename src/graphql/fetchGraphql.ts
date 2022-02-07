@@ -2,7 +2,6 @@ import {getUserLocally} from '../hooks/useUserData';
 
 async function fetchGraphQL(text: string, variables: any) {
   const GITHUB_AUTH_TOKEN = await getUserLocally('accessToken');
-  console.log('fetch token', GITHUB_AUTH_TOKEN);
 
   // Fetch data from GitHub's GraphQL API:
   const response = await fetch('https://api.github.com/graphql', {

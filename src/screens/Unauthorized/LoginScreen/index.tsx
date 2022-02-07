@@ -129,7 +129,6 @@ function LoginScreen() {
 
   // Create current user data
   const createUserData = async (data: GitWatchUser) => {
-    console.log('createuserdata data', data);
     try {
       await firestore().collection('Users').doc(data.id).set(data);
     } catch (e) {
@@ -205,7 +204,7 @@ function LoginScreen() {
           },
         });
       } catch (e) {
-        console.log('onContinuePress', e);
+        console.log('onContinuePress error', e);
       }
     } else {
       // Restore user data from Firestore
@@ -255,8 +254,6 @@ function LoginScreen() {
         // Get Github viewer data
         const viewerData = await getUserData();
 
-        console.log('viewerdata', viewerData);
-
         if (!viewerData.email) {
           setViewer(viewer);
           setError('email-missing');
@@ -267,7 +264,6 @@ function LoginScreen() {
 
         // Initialize Firebase auth user
         const user = await initializeFirebaseUser(viewerData.email);
-        console.log('user', user);
         const [firstName, lastName] = viewerData?.name!.split(' ') ?? ['', ''];
 
         let userInformations: GitWatchUser = {
@@ -287,24 +283,17 @@ function LoginScreen() {
         // - Show initial app configuration screen
         if (user?.isNewUser) {
           try {
-            console.log('is new user');
             const userIssues = await getUserIssues(viewerData.login);
-            console.log('userIssues', userIssues);
             let estimatedRepositories = [];
             let estimatedOrganizations: Array<string> = [];
 
             if (userIssues.length) {
-              console.log(
-                'got issues, can fetch repositories and organizations',
-              );
               estimatedRepositories = getEstimatedRepositories(userIssues);
               await createUserRepositories(user.id, estimatedRepositories);
 
               estimatedOrganizations = getEstimatedOrganizations(userIssues);
               await createUserOrganizations(user.id, estimatedOrganizations);
             }
-
-            console.log('userinformations', userInformations);
 
             await createUserData(userInformations);
 
@@ -322,7 +311,6 @@ function LoginScreen() {
             console.log('onLogin error', e);
           }
         } else {
-          console.log('not new user');
           // Restore user data from Firestore
           const firestoreUser = await firestore()
             .collection('Users')
