@@ -13,9 +13,10 @@ const styles: IStyles = {
     backgroundColor: '#ffffff',
   },
   container: {
+    backgroundColor: 'transparent',
     flexGrow: 1,
     marginHorizontal: 16,
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   title: {
     textAlign: 'center',
