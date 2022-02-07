@@ -4,6 +4,7 @@
 
 import { ConcreteRequest } from "relay-runtime";
 
+export type PullRequestReviewDecision = "APPROVED" | "CHANGES_REQUESTED" | "REVIEW_REQUIRED" | "%future added value";
 export type GetReviewsQueryVariables = {
     query: string;
 };
@@ -23,8 +24,22 @@ export type GetReviewsQueryResponse = {
                 readonly deletions?: number | undefined;
                 readonly body?: string | undefined;
                 readonly updatedAt?: unknown | undefined;
+                readonly reviewDecision?: PullRequestReviewDecision | null | undefined;
+                readonly reviewRequests?: {
+                    readonly totalCount: number;
+                    readonly edges: ReadonlyArray<{
+                        readonly node: {
+                            readonly id: string;
+                            readonly requestedReviewer: {
+                                readonly id?: string | undefined;
+                                readonly avatarUrl?: unknown | undefined;
+                            } | null;
+                        } | null;
+                    } | null> | null;
+                } | null | undefined;
                 readonly author?: {
                     readonly login: string;
+                    readonly avatarUrl: unknown;
                 } | null | undefined;
                 readonly repository?: {
                     readonly name: string;
@@ -65,9 +80,30 @@ query GetReviewsQuery(
           deletions
           body
           updatedAt
+          reviewDecision
+          reviewRequests(first: 100) {
+            totalCount
+            edges {
+              node {
+                id
+                requestedReviewer {
+                  __typename
+                  ... on User {
+                    id
+                    avatarUrl
+                  }
+                  ... on Node {
+                    __isNode: __typename
+                    id
+                  }
+                }
+              }
+            }
+          }
           author {
             __typename
             login
+            avatarUrl
             ... on Node {
               __isNode: __typename
               id
@@ -102,12 +138,13 @@ var v0 = [
     "name": "query"
   }
 ],
-v1 = [
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 100
-  },
+v1 = {
+  "kind": "Literal",
+  "name": "first",
+  "value": 100
+},
+v2 = [
+  (v1/*: any*/),
   {
     "kind": "Variable",
     "name": "query",
@@ -119,136 +156,162 @@ v1 = [
     "value": "ISSUE"
   }
 ],
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "issueCount",
   "storageKey": null
 },
-v3 = {
+v4 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "number",
   "storageKey": null
 },
-v4 = {
+v5 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "title",
   "storageKey": null
 },
-v5 = {
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "isDraft",
   "storageKey": null
 },
-v6 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "createdAt",
   "storageKey": null
 },
-v7 = {
+v8 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "mergedAt",
   "storageKey": null
 },
-v8 = {
+v9 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "url",
   "storageKey": null
 },
-v9 = {
+v10 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "changedFiles",
   "storageKey": null
 },
-v10 = {
+v11 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "additions",
   "storageKey": null
 },
-v11 = {
+v12 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "deletions",
   "storageKey": null
 },
-v12 = {
+v13 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "body",
   "storageKey": null
 },
-v13 = {
+v14 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "updatedAt",
   "storageKey": null
 },
-v14 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "login",
-  "storageKey": null
-},
 v15 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "name",
+  "name": "reviewDecision",
   "storageKey": null
 },
-v16 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "nameWithOwner",
-  "storageKey": null
-},
+v16 = [
+  (v1/*: any*/)
+],
 v17 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "avatarUrl",
+  "name": "totalCount",
   "storageKey": null
 },
 v18 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "__typename",
+  "name": "id",
   "storageKey": null
 },
 v19 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "id",
+  "name": "avatarUrl",
   "storageKey": null
 },
 v20 = {
   "kind": "InlineFragment",
   "selections": [
+    (v18/*: any*/),
     (v19/*: any*/)
+  ],
+  "type": "User",
+  "abstractKey": null
+},
+v21 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "login",
+  "storageKey": null
+},
+v22 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "name",
+  "storageKey": null
+},
+v23 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "nameWithOwner",
+  "storageKey": null
+},
+v24 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v25 = {
+  "kind": "InlineFragment",
+  "selections": [
+    (v18/*: any*/)
   ],
   "type": "Node",
   "abstractKey": "__isNode"
@@ -262,13 +325,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": "SearchResultItemConnection",
         "kind": "LinkedField",
         "name": "search",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -288,7 +351,6 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v3/*: any*/),
                       (v4/*: any*/),
                       (v5/*: any*/),
                       (v6/*: any*/),
@@ -299,6 +361,55 @@ return {
                       (v11/*: any*/),
                       (v12/*: any*/),
                       (v13/*: any*/),
+                      (v14/*: any*/),
+                      (v15/*: any*/),
+                      {
+                        "alias": null,
+                        "args": (v16/*: any*/),
+                        "concreteType": "ReviewRequestConnection",
+                        "kind": "LinkedField",
+                        "name": "reviewRequests",
+                        "plural": false,
+                        "selections": [
+                          (v17/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "ReviewRequestEdge",
+                            "kind": "LinkedField",
+                            "name": "edges",
+                            "plural": true,
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": "ReviewRequest",
+                                "kind": "LinkedField",
+                                "name": "node",
+                                "plural": false,
+                                "selections": [
+                                  (v18/*: any*/),
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": null,
+                                    "kind": "LinkedField",
+                                    "name": "requestedReviewer",
+                                    "plural": false,
+                                    "selections": [
+                                      (v20/*: any*/)
+                                    ],
+                                    "storageKey": null
+                                  }
+                                ],
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": "reviewRequests(first:100)"
+                      },
                       {
                         "alias": null,
                         "args": null,
@@ -307,7 +418,8 @@ return {
                         "name": "author",
                         "plural": false,
                         "selections": [
-                          (v14/*: any*/)
+                          (v21/*: any*/),
+                          (v19/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -319,8 +431,8 @@ return {
                         "name": "repository",
                         "plural": false,
                         "selections": [
-                          (v15/*: any*/),
-                          (v16/*: any*/),
+                          (v22/*: any*/),
+                          (v23/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -329,7 +441,7 @@ return {
                             "name": "owner",
                             "plural": false,
                             "selections": [
-                              (v17/*: any*/)
+                              (v19/*: any*/)
                             ],
                             "storageKey": null
                           }
@@ -361,13 +473,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v2/*: any*/),
         "concreteType": "SearchResultItemConnection",
         "kind": "LinkedField",
         "name": "search",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
+          (v3/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -384,11 +496,10 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v18/*: any*/),
+                  (v24/*: any*/),
                   {
                     "kind": "InlineFragment",
                     "selections": [
-                      (v3/*: any*/),
                       (v4/*: any*/),
                       (v5/*: any*/),
                       (v6/*: any*/),
@@ -399,6 +510,57 @@ return {
                       (v11/*: any*/),
                       (v12/*: any*/),
                       (v13/*: any*/),
+                      (v14/*: any*/),
+                      (v15/*: any*/),
+                      {
+                        "alias": null,
+                        "args": (v16/*: any*/),
+                        "concreteType": "ReviewRequestConnection",
+                        "kind": "LinkedField",
+                        "name": "reviewRequests",
+                        "plural": false,
+                        "selections": [
+                          (v17/*: any*/),
+                          {
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "ReviewRequestEdge",
+                            "kind": "LinkedField",
+                            "name": "edges",
+                            "plural": true,
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "concreteType": "ReviewRequest",
+                                "kind": "LinkedField",
+                                "name": "node",
+                                "plural": false,
+                                "selections": [
+                                  (v18/*: any*/),
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": null,
+                                    "kind": "LinkedField",
+                                    "name": "requestedReviewer",
+                                    "plural": false,
+                                    "selections": [
+                                      (v24/*: any*/),
+                                      (v20/*: any*/),
+                                      (v25/*: any*/)
+                                    ],
+                                    "storageKey": null
+                                  }
+                                ],
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": "reviewRequests(first:100)"
+                      },
                       {
                         "alias": null,
                         "args": null,
@@ -407,9 +569,10 @@ return {
                         "name": "author",
                         "plural": false,
                         "selections": [
-                          (v18/*: any*/),
-                          (v14/*: any*/),
-                          (v20/*: any*/)
+                          (v24/*: any*/),
+                          (v21/*: any*/),
+                          (v19/*: any*/),
+                          (v25/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -421,8 +584,8 @@ return {
                         "name": "repository",
                         "plural": false,
                         "selections": [
-                          (v15/*: any*/),
-                          (v16/*: any*/),
+                          (v22/*: any*/),
+                          (v23/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -431,13 +594,13 @@ return {
                             "name": "owner",
                             "plural": false,
                             "selections": [
-                              (v18/*: any*/),
-                              (v17/*: any*/),
-                              (v19/*: any*/)
+                              (v24/*: any*/),
+                              (v19/*: any*/),
+                              (v18/*: any*/)
                             ],
                             "storageKey": null
                           },
-                          (v19/*: any*/)
+                          (v18/*: any*/)
                         ],
                         "storageKey": null
                       }
@@ -445,7 +608,7 @@ return {
                     "type": "PullRequest",
                     "abstractKey": null
                   },
-                  (v20/*: any*/)
+                  (v25/*: any*/)
                 ],
                 "storageKey": null
               }
@@ -458,14 +621,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "adcfe7b460e5192c16d6810398138f07",
+    "cacheID": "d685ae3b9be82b65c4119c732bd3e832",
     "id": null,
     "metadata": {},
     "name": "GetReviewsQuery",
     "operationKind": "query",
-    "text": "query GetReviewsQuery(\n  $query: String!\n) {\n  search(first: 100, type: ISSUE, query: $query) {\n    issueCount\n    edges {\n      node {\n        __typename\n        ... on PullRequest {\n          number\n          title\n          isDraft\n          createdAt\n          mergedAt\n          url\n          changedFiles\n          additions\n          deletions\n          body\n          updatedAt\n          author {\n            __typename\n            login\n            ... on Node {\n              __isNode: __typename\n              id\n            }\n          }\n          repository {\n            name\n            nameWithOwner\n            owner {\n              __typename\n              avatarUrl\n              id\n            }\n            id\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n  }\n}\n"
+    "text": "query GetReviewsQuery(\n  $query: String!\n) {\n  search(first: 100, type: ISSUE, query: $query) {\n    issueCount\n    edges {\n      node {\n        __typename\n        ... on PullRequest {\n          number\n          title\n          isDraft\n          createdAt\n          mergedAt\n          url\n          changedFiles\n          additions\n          deletions\n          body\n          updatedAt\n          reviewDecision\n          reviewRequests(first: 100) {\n            totalCount\n            edges {\n              node {\n                id\n                requestedReviewer {\n                  __typename\n                  ... on User {\n                    id\n                    avatarUrl\n                  }\n                  ... on Node {\n                    __isNode: __typename\n                    id\n                  }\n                }\n              }\n            }\n          }\n          author {\n            __typename\n            login\n            avatarUrl\n            ... on Node {\n              __isNode: __typename\n              id\n            }\n          }\n          repository {\n            name\n            nameWithOwner\n            owner {\n              __typename\n              avatarUrl\n              id\n            }\n            id\n          }\n        }\n        ... on Node {\n          __isNode: __typename\n          id\n        }\n      }\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '609c7f092939564433bb5a60fd45deb2';
+(node as any).hash = '79c86e32f5606019558d8ca286aceb85';
 export default node;

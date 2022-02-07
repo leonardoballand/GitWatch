@@ -18,9 +18,26 @@ const GetReviewsQuery = graphql`
             deletions
             body
             updatedAt
+            reviewDecision
+
+            reviewRequests(first: 100) {
+              totalCount
+              edges {
+                node {
+                  id
+                  requestedReviewer {
+                    ... on User {
+                      id
+                      avatarUrl
+                    }
+                  }
+                }
+              }
+            }
 
             author {
               login
+              avatarUrl
             }
 
             repository {

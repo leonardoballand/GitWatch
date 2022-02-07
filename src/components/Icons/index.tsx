@@ -16,7 +16,11 @@ export const PullRequestIcon = (props: any) => (
 );
 
 export const ReadyIcon = (props: any) => (
-  <Octicon {...props} size={24} name="repo-pull" />
+  <Octicon {...props} size={24} name="git-pull-request" />
+);
+
+export const DraftIcon = (props: any) => (
+  <Octicon {...props} size={24} name="git-pull-request" />
 );
 
 export const ReviewIcon = (props: any) => (

@@ -129,7 +129,12 @@ function LoginScreen() {
 
   // Create current user data
   const createUserData = async (data: GitWatchUser) => {
-    await firestore().collection('Users').doc(data.id).set(data);
+    console.log('createuserdata data', data);
+    try {
+      await firestore().collection('Users').doc(data.id).set(data);
+    } catch (e) {
+      console.log('createUserData error', e);
+    }
   };
 
   const onButtonPress = () => {
@@ -157,7 +162,7 @@ function LoginScreen() {
     // Initialize Firebase auth user
     const user = await initializeFirebaseUser(email);
 
-    const [firstName, lastName] = viewer?.name!.split(' ') ?? ['John', 'Doe'];
+    const [firstName, lastName] = viewer?.name!.split(' ') ?? ['', ''];
 
     let userInformations = {
       id: user?.id,
@@ -173,26 +178,35 @@ function LoginScreen() {
     // - Get data suggestions
     // - Show initial app configuration screen
     if (user?.isNewUser) {
-      const userIssues = await getUserIssues(viewer?.login!);
+      try {
+        const userIssues = await getUserIssues(viewer?.login!);
 
-      const estimatedRepositories = getEstimatedRepositories(userIssues);
-      await createUserRepositories(user.id, estimatedRepositories);
+        let estimatedRepositories = [];
+        let estimatedOrganizations: Array<string> = [];
 
-      const estimatedOrganizations = getEstimatedOrganizations(userIssues);
-      await createUserOrganizations(user.id, estimatedOrganizations);
+        if (userIssues.length) {
+          estimatedRepositories = getEstimatedRepositories(userIssues);
+          await createUserRepositories(user.id, estimatedRepositories);
 
-      await createUserData(userInformations);
+          estimatedOrganizations = getEstimatedOrganizations(userIssues);
+          await createUserOrganizations(user.id, estimatedOrganizations);
+        }
 
-      setUser(null, {
-        ...userInformations,
-        isNewUser: true,
-        repositories: {
-          suggested: estimatedRepositories,
-        },
-        organizations: {
-          suggested: estimatedOrganizations,
-        },
-      });
+        await createUserData(userInformations);
+
+        setUser(null, {
+          ...userInformations,
+          isNewUser: true,
+          repositories: {
+            suggested: estimatedRepositories,
+          },
+          organizations: {
+            suggested: estimatedOrganizations,
+          },
+        });
+      } catch (e) {
+        console.log('onContinuePress', e);
+      }
     } else {
       // Restore user data from Firestore
       const firestoreUser = await firestore()
@@ -207,25 +221,29 @@ function LoginScreen() {
   const onCodeReceived = async () => {
     if (loading && params?.code) {
       if (params?.state === state) {
-        // send post to get access token
-        const res = await fetch(
-          `https://github.com/login/oauth/access_token?client_id=${config.clientId}&client_secret=${config.clientSecret}&code=${params?.code}`,
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
+        try {
+          // send post to get access token
+          const res = await fetch(
+            `https://github.com/login/oauth/access_token?client_id=${config.clientId}&client_secret=${config.clientSecret}&code=${params?.code}`,
+            {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+              },
             },
-          },
-        );
+          );
 
-        if (res.status === 200) {
-          const githubLoginData = await res.json();
-          setUser('accessToken', githubLoginData.access_token);
-          setLoading(false);
-          setCodeReceived(true);
-        } else {
-          setLoading(false);
-          console.log('error with login', params, res.status);
+          if (res.status === 200) {
+            const githubLoginData = await res.json();
+            setUser('accessToken', githubLoginData.access_token);
+            setLoading(false);
+            setCodeReceived(true);
+          } else {
+            setLoading(false);
+            console.log('error with login', params, res.status);
+          }
+        } catch (e) {
+          console.log('onCodeReceived error', e);
         }
       }
     }
@@ -237,6 +255,8 @@ function LoginScreen() {
         // Get Github viewer data
         const viewerData = await getUserData();
 
+        console.log('viewerdata', viewerData);
+
         if (!viewerData.email) {
           setViewer(viewer);
           setError('email-missing');
@@ -247,10 +267,8 @@ function LoginScreen() {
 
         // Initialize Firebase auth user
         const user = await initializeFirebaseUser(viewerData.email);
-        const [firstName, lastName] = viewerData?.name!.split(' ') ?? [
-          'John',
-          'Doe',
-        ];
+        console.log('user', user);
+        const [firstName, lastName] = viewerData?.name!.split(' ') ?? ['', ''];
 
         let userInformations: GitWatchUser = {
           id: user?.id as string,
@@ -268,27 +286,43 @@ function LoginScreen() {
         // - Get data suggestions
         // - Show initial app configuration screen
         if (user?.isNewUser) {
-          const userIssues = await getUserIssues(viewerData.login);
+          try {
+            console.log('is new user');
+            const userIssues = await getUserIssues(viewerData.login);
+            console.log('userIssues', userIssues);
+            let estimatedRepositories = [];
+            let estimatedOrganizations: Array<string> = [];
 
-          const estimatedRepositories = getEstimatedRepositories(userIssues);
-          await createUserRepositories(user.id, estimatedRepositories);
+            if (userIssues.length) {
+              console.log(
+                'got issues, can fetch repositories and organizations',
+              );
+              estimatedRepositories = getEstimatedRepositories(userIssues);
+              await createUserRepositories(user.id, estimatedRepositories);
 
-          const estimatedOrganizations = getEstimatedOrganizations(userIssues);
-          await createUserOrganizations(user.id, estimatedOrganizations);
+              estimatedOrganizations = getEstimatedOrganizations(userIssues);
+              await createUserOrganizations(user.id, estimatedOrganizations);
+            }
 
-          await createUserData(userInformations);
+            console.log('userinformations', userInformations);
 
-          setUser(null, {
-            ...userInformations,
-            isNewUser: true,
-            repositories: {
-              suggested: estimatedRepositories,
-            },
-            organizations: {
-              suggested: estimatedOrganizations,
-            },
-          });
+            await createUserData(userInformations);
+
+            setUser(null, {
+              ...userInformations,
+              isNewUser: true,
+              repositories: {
+                suggested: estimatedRepositories,
+              },
+              organizations: {
+                suggested: estimatedOrganizations,
+              },
+            });
+          } catch (e) {
+            console.log('onLogin error', e);
+          }
         } else {
+          console.log('not new user');
           // Restore user data from Firestore
           const firestoreUser = await firestore()
             .collection('Users')

@@ -1,26 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Image,
-  ScrollView,
-  ViewStyle,
-  TextStyle,
-  ImageStyle,
-} from 'react-native';
+import {View, Image, ScrollView, Platform} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Toggle, Text, Button, Spinner, CheckBox} from '@ui-kitten/components';
 import auth from '@react-native-firebase/auth';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import firestore from '@react-native-firebase/firestore';
 import appDistribution from '@react-native-firebase/app-distribution';
 import messaging from '@react-native-firebase/messaging';
 import {useUserData} from 'hooks/useUserData';
 import {AppStackParamsList, GitWatchUser} from 'types';
 import useToggleStates from 'hooks/useToggleStates';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {GQLRepository} from 'graphql/schema';
 import {ActionCompletedIcon} from 'components/Icons';
+
+import styles from './index.style';
 
 type Slide = {
   key:
@@ -77,55 +72,6 @@ const slides: Slide[] = [
     backgroundColor: '#ffffff',
   },
 ];
-
-interface IStyles {
-  screenContainer: ViewStyle;
-  slide: ViewStyle;
-  title: TextStyle;
-  image: ImageStyle;
-  text: TextStyle;
-  buttonCircle: ViewStyle;
-  toggle: ViewStyle;
-}
-
-const styles: IStyles = {
-  screenContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  slide: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#ffffff',
-  },
-  title: {
-    fontSize: 22,
-    textAlign: 'center',
-  },
-  image: {
-    width: '100%',
-    height: 320,
-    resizeMode: 'cover',
-    marginBottom: 32,
-  },
-  text: {
-    marginVertical: 16,
-    textAlign: 'center',
-  },
-  buttonCircle: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'rgba(0, 0, 0, .2)',
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  toggle: {
-    margin: 8,
-  },
-};
 
 type Props = NativeStackScreenProps<AppStackParamsList, 'Configuration'>;
 
@@ -269,28 +215,30 @@ function ConfigurationScreen() {
             marginTop: 16,
           }}>
           <View>
-            <Button
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: 16,
-              }}
-              status={
-                permissionsToggles.checked.appUpdatesEnabled
-                  ? 'basic'
-                  : 'primary'
-              }
-              disabled={permissionsToggles.checked.appUpdatesEnabled}
-              accessoryRight={
-                permissionsToggles.checked.appUpdatesEnabled
-                  ? () => <ActionCompletedIcon />
-                  : undefined
-              }
-              onPress={enableAppUpdates}>
-              {permissionsToggles.checked.appUpdatesEnabled
-                ? 'App updates enabled'
-                : 'Enable app updates'}
-            </Button>
+            {Platform.OS === 'ios' && (
+              <Button
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 16,
+                }}
+                status={
+                  permissionsToggles.checked.appUpdatesEnabled
+                    ? 'basic'
+                    : 'primary'
+                }
+                disabled={permissionsToggles.checked.appUpdatesEnabled}
+                accessoryRight={
+                  permissionsToggles.checked.appUpdatesEnabled
+                    ? () => <ActionCompletedIcon />
+                    : undefined
+                }
+                onPress={enableAppUpdates}>
+                {permissionsToggles.checked.appUpdatesEnabled
+                  ? 'App updates enabled'
+                  : 'Enable app updates'}
+              </Button>
+            )}
 
             <Button
               style={{
@@ -324,7 +272,7 @@ function ConfigurationScreen() {
   ) => {
     return (
       <ScrollView
-        style={{flexGrow: 1}}
+        style={{flexGrow: 1, backgroundColor: 'white'}}
         contentContainerStyle={styles.slide}
         alwaysBounceVertical={false}>
         <Image style={styles.image} source={{uri: item.image}} />
@@ -403,13 +351,13 @@ function ConfigurationScreen() {
     }
 
     return (
-      <View style={styles.slide}>
+      <ScrollView contentContainerStyle={styles.slide}>
         <Image style={styles.image} source={{uri: item.image}} />
         <Text category="h1" status="success">
           {item.title}
         </Text>
         <Text category="s1">{item.text}</Text>
-      </View>
+      </ScrollView>
     );
   };
 
@@ -502,6 +450,26 @@ function ConfigurationScreen() {
     setCurrentIndex(index);
   };
 
+  const getInitialIndex = () => {
+    if (params.organizations.length) {
+      return 0;
+    } else if (params.repositories.length) {
+      return 1;
+    } else {
+      return 2;
+    }
+  };
+
+  const showPrevButton = () => {
+    if (params.organizations.length && currentIndex > 0) {
+      return true;
+    } else if (params.repositories.length && currentIndex > 1) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   useEffect(() => {
     const userId = auth().currentUser?.uid;
 
@@ -509,10 +477,12 @@ function ConfigurationScreen() {
       .collection('Users')
       .doc(userId)
       .onSnapshot(documentSnapshot => {
-        permissionsToggles.onChange(
-          'appUpdatesEnabled',
-          documentSnapshot?.data()?.appUpdatesEnabled ?? false,
-        );
+        if (Platform.OS === 'ios') {
+          permissionsToggles.onChange(
+            'appUpdatesEnabled',
+            documentSnapshot?.data()?.appUpdatesEnabled ?? false,
+          );
+        }
 
         permissionsToggles.onChange(
           'notifications',
@@ -542,6 +512,7 @@ function ConfigurationScreen() {
   return (
     <AppIntroSlider
       scrollEnabled={false}
+      initialScrollIndex={getInitialIndex()}
       renderItem={renderItem}
       data={slides}
       onDone={onDone}
@@ -549,8 +520,8 @@ function ConfigurationScreen() {
       renderPrevButton={renderPrevButton}
       renderNextButton={renderNextButton}
       renderDoneButton={renderDoneButton}
-      showPrevButton={currentIndex !== 0}
-      dotStyle={{backgroundColor: 'transparent'}}
+      showPrevButton={showPrevButton}
+      dotStyle={{display: 'none', backgroundColor: 'transparent'}}
     />
   );
 }

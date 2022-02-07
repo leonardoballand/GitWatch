@@ -10,7 +10,11 @@ const getUserIssues = (login: string): Promise<GQLIssue[]> => {
       query: `is:open is:issue assignee:${login} archived:false`,
     }).subscribe({
       next: data => {
-        resolve(data.search.edges?.map(edge => edge?.node) as GQLIssue[]);
+        resolve(
+          data.search.issueCount > 0
+            ? (data.search.edges?.map(edge => edge?.node) as GQLIssue[])
+            : [],
+        );
       },
       error: (err: any) => reject(err),
     });

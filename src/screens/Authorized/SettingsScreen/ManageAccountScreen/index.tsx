@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {Platform, TouchableOpacity, View} from 'react-native';
 import {Button, Text} from '@ui-kitten/components';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -16,6 +16,7 @@ import {GQLRepository} from 'graphql/schema';
 import {AppStackParamsList, GitWatchUser} from 'types';
 import {CloseIcon} from 'components/Icons';
 import AppHeader from 'components/AppHeader';
+import {useUserData} from 'hooks/useUserData';
 
 import styles from './index.style';
 
@@ -32,6 +33,7 @@ type NavigationProps = Props['navigation'];
 
 function ManageAccountScreen() {
   const {goBack} = useNavigation<NavigationProps>();
+  const {data} = useUserData();
 
   const bottomSheetRef = React.useRef<BottomSheet>(null);
 
@@ -96,7 +98,10 @@ function ManageAccountScreen() {
 
       const userId = auth().currentUser?.uid;
 
-      await appDistribution().signOutTester();
+      if (Platform.OS === 'ios') {
+        await appDistribution().signOutTester();
+      }
+
       await firestore().collection('Users').doc(userId).delete();
       await firestore().collection('Repositories').doc(userId).delete();
       await firestore().collection('Organizations').doc(userId).delete();
@@ -104,6 +109,12 @@ function ManageAccountScreen() {
       await auth().signOut();
     } catch (e) {
       console.log('removeAccount error', e);
+      if (String(e).includes('auth/requires-recent-login')) {
+        console.log();
+        await auth().signInWithEmailAndPassword(data?.email!, '123456789!');
+        await auth().currentUser?.delete();
+        await auth().signOut();
+      }
     } finally {
       bottomSheetRef.current?.forceClose();
       setLoading(false);

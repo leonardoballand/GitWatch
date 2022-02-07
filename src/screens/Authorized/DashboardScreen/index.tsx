@@ -19,6 +19,7 @@ import getUserPullRequests from 'api/github/getUserPullRequests';
 import AppHeader from 'components/AppHeader';
 import {
   GQLPullRequest,
+  GQLPullRequestReviewDecision,
   GQLRepository,
   GQLWorkflow,
   GQLWorkflowRun,
@@ -36,10 +37,12 @@ import {
   ActionStoppedIcon,
   ActionFailedIcon,
   NotificationsIcon,
+  DraftIcon,
 } from 'components/Icons';
 import getRepositoryGithubActions from 'api/github/getRepositoryGithubActions';
 import GithubActionCard from 'components/GithubActionCard';
 import SectionHeader from 'components/SectionHeader';
+import GithubPullRequestCard from 'components/GithubPullRequestCard';
 
 type Props = NativeStackScreenProps<TabStackParamsList, 'Dashboard'>;
 
@@ -174,6 +177,27 @@ function DashboardScreen() {
     );
   };
 
+  const renderPullRequestIcon = (isDraft: boolean) => {
+    if (isDraft) {
+      return <DraftIcon color="rgb(139, 148, 158)" />;
+    }
+
+    return <PullRequestIcon color="rgb(63, 185, 80)" />;
+  };
+
+  const renderPullRequestStatus = (
+    reviewDecision: GQLPullRequestReviewDecision,
+  ) => {
+    switch (reviewDecision) {
+      case 'APPROVED':
+        return 'Approved';
+      case 'CHANGES_REQUESTED':
+        return 'Changes requested';
+      case 'REVIEW_REQUIRED':
+        return 'Review required';
+    }
+  };
+
   const renderItemAuthor = (author: string) => (
     <Text category="c1">{author}</Text>
   );
@@ -289,18 +313,19 @@ function DashboardScreen() {
 
           {pullRequests?.length ? (
             pullRequests.map(pullRequest => (
-              <ListItem
-                title={`${pullRequest.title}`}
-                description={`${pullRequest.author?.login}`}
-                accessoryLeft={props =>
-                  renderItemStatus(pullRequest.isDraft, props)
-                }
-                accessoryRight={() =>
-                  renderItemAuthor(
-                    String(pullRequest.repository.name).split(' ')[0],
-                  )
-                }
-                onPress={() => onPullRequestPress(pullRequest)}
+              <GithubPullRequestCard
+                title={pullRequest.title}
+                description={pullRequest.author?.login}
+                icon={renderPullRequestIcon(pullRequest.isDraft)}
+                label={pullRequest.repository.name}
+                author={pullRequest.author?.login}
+                branch={renderPullRequestStatus(pullRequest.reviewDecision!)}
+                time={new Date(pullRequest.createdAt)}
+                reviewers={pullRequest.reviewRequests?.edges?.map(
+                  edge => edge.node?.requestedReviewer,
+                )}
+                isDraft={pullRequest.isDraft}
+                onPress={() => openItemLink(pullRequest.url)}
               />
             ))
           ) : (
