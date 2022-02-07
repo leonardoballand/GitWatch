@@ -14,6 +14,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8F2A04007034CFA1C6794291 /* libPods-GitWatch-GitWatchTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B2E8ECBDC70EF23AE7267076 /* libPods-GitWatch-GitWatchTests.a */; };
 		A7443576279C3162006F68F1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A7443575279C3162006F68F1 /* GoogleService-Info.plist */; };
+		A7E856A827B0A2F30080E305 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = A7E856A727B0A2F20080E305 /* logo.png */; };
 		E77E9A2D3FF92BA66AB6C62C /* libPods-GitWatch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A7B6B639E29554036C965D1B /* libPods-GitWatch.a */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +47,7 @@
 		A749C2E5275EC1D5008E6B48 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
 		A749C2EF275EC1D5008E6B48 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
 		A7B6B639E29554036C965D1B /* libPods-GitWatch.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GitWatch.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7E856A727B0A2F20080E305 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Images/logo.png; sourceTree = "<group>"; };
 		B2E8ECBDC70EF23AE7267076 /* libPods-GitWatch-GitWatchTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GitWatch-GitWatchTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2EC8AF8A413E8AF15968EED /* Pods-GitWatch.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GitWatch.release.xcconfig"; path = "Target Support Files/Pods-GitWatch/Pods-GitWatch.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -92,6 +94,7 @@
 		13B07FAE1A68108700A75B9A /* GitWatch */ = {
 			isa = PBXGroup;
 			children = (
+				A7E856A727B0A2F20080E305 /* logo.png */,
 				A7443575279C3162006F68F1 /* GoogleService-Info.plist */,
 				A749C2DF275EC1D5008E6B48 /* Fonts */,
 				A7431CD927314E9C00E55250 /* GitWatch.entitlements */,
@@ -262,6 +265,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A7E856A827B0A2F30080E305 /* logo.png in Resources */,
 				A7443576279C3162006F68F1 /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
