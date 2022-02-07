@@ -4,6 +4,12 @@ apply plugin: 'com.google.firebase.appdistribution'
 
 import com.android.build.OutputFile
 
+Map<String, String> env = System.getenv();
+    for (String key : env.keySet())
+    {
+        System.out.println(key + ":" + env.get(key));
+    }
+
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -172,6 +178,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file(System.getenv("GITWATCH_KEYSTORE"))
+            storePassword System.getenv("GITWATCH_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("GITWATCH_KEY_ALIAS")
+            keyPassword System.getenv("GITWATCH_KEY_PASSWORD")
+        }
     }
     buildTypes {
         debug {
@@ -185,7 +197,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
