@@ -1,6 +1,6 @@
 ---
 name: Help
-about: Use this template for tracking help requests.
+about: Use for help requests
 title: "Mobile: [HELP]"
 labels: help, mobile, needs triage
 assignees: leonardoballand
