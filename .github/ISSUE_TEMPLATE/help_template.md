@@ -1,6 +1,6 @@
 ---
 name: Help
-about: Use for help requests
+about: Use for requesting help
 title: "Mobile: [HELP]"
 labels: help, mobile, needs triage
 assignees: leonardoballand
