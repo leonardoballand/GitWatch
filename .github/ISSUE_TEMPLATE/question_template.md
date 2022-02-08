@@ -1,6 +1,6 @@
 ---
 name: Question
-about: Use this template for tracking question.
+about: Use for asking questions
 title: "Mobile: [QUESTION]"
 labels: question, mobile, needs triage
 assignees: leonardoballand
