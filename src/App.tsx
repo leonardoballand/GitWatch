@@ -16,6 +16,9 @@ import withProviders from 'withProviders';
 import {AppStackParamsList} from 'types';
 import ManageAccountScreen from 'screens/Authorized/SettingsScreen/ManageAccountScreen';
 import FeedbacksScreen from 'screens/Authorized/SettingsScreen/FeedbacksScreen';
+import useFirebaseUpdates from 'hooks/useFirebaseUpdates';
+import AppUpdateScreen from 'screens/Authorized/AppUpdateScreen';
+import {FirebaseAppDistributionTypes} from '@react-native-firebase/app-distribution';
 
 enableFreeze(true);
 
@@ -28,6 +31,12 @@ interface IProps {
 const App = withProviders(({loading}: IProps) => {
   const {data: userData, deleteUser} = useUserData();
   const {navigate} = useNavigation<NavigationProp<AppStackParamsList>>();
+
+  const openAppUpdateModal = (
+    data: FirebaseAppDistributionTypes.AppDistributionRelease,
+  ) => navigate('AppUpdate', data);
+
+  useFirebaseUpdates(openAppUpdateModal);
 
   const [initializing, setInitializing] = useState(true);
 
@@ -129,6 +138,14 @@ const App = withProviders(({loading}: IProps) => {
           <Screen
             name="Feedbacks"
             component={FeedbacksScreen}
+            options={{
+              presentation: 'formSheet',
+            }}
+          />
+
+          <Screen
+            name="AppUpdate"
+            component={AppUpdateScreen}
             options={{
               presentation: 'formSheet',
             }}

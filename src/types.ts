@@ -1,3 +1,4 @@
+import {FirebaseAppDistributionTypes} from '@react-native-firebase/app-distribution';
 import {GQLPullRequest, GQLRepository} from 'graphql/schema';
 
 export interface GitWatchUser {
@@ -28,6 +29,7 @@ export type AppStackParamsList = {
   };
   ManageAccount: undefined;
   Feedbacks: undefined;
+  AppUpdate: FirebaseAppDistributionTypes.AppDistributionRelease;
 };
 
 export type TabStackParamsList = {
