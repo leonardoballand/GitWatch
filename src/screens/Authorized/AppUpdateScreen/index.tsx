@@ -52,9 +52,9 @@ function AppUpdateScreen() {
               Woooow!
             </Text>
             <Text category="p2">
-              Our awesome GitWatch app is now more stronger and beautiful than
-              ever! Don't miss the new experience, please read carefully the
-              following release notes and download it.
+              Our awesome GitWatch app is now as beautiful as ever! Don't miss
+              this new experience, read the release notes carefully and download
+              it!
             </Text>
 
             <View
@@ -65,7 +65,7 @@ function AppUpdateScreen() {
                 padding: 16,
                 borderRadius: 4,
               }}>
-              <Text>{params.releaseNotes!}</Text>
+              <Text category="c1">{params.releaseNotes ?? ''}</Text>
             </View>
           </View>
         </View>
