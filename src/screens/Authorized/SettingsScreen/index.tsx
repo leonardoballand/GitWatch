@@ -89,6 +89,8 @@ function SettingsScreen() {
 
   const goToManageAccount = () => navigate('ManageAccount');
 
+  const goToFeedbacks = () => navigate('Feedbacks');
+
   const renderRightActions = () => {
     return <TopNavigationAction icon={LogoutIcon} onPress={logout} />;
   };
@@ -311,7 +313,7 @@ function SettingsScreen() {
           title="Help & feedback"
           accessoryLeft={HelpIcon}
           // accessoryRight={ChevronIcon}
-          disabled
+          onPress={goToFeedbacks}
         />
       </ScrollView>
 

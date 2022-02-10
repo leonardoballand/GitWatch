@@ -27,6 +27,7 @@ export type AppStackParamsList = {
     repositories: GQLRepository[];
   };
   ManageAccount: undefined;
+  Feedbacks: undefined;
 };
 
 export type TabStackParamsList = {

@@ -1,10 +1,12 @@
 import React from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View, Animated} from 'react-native';
+import type {ViewStyle} from 'react-native';
 import {Text, useTheme} from '@ui-kitten/components';
 
 import styles from './index.style';
 
 interface ISectionHeader {
+  style: ViewStyle;
   icon: JSX.Element;
   title: string;
   rightActionLabel?: string;
@@ -13,6 +15,7 @@ interface ISectionHeader {
 }
 
 const SectionHeader = ({
+  style = {},
   icon,
   title,
   rightActionLabel,
@@ -22,7 +25,7 @@ const SectionHeader = ({
   const theme = useTheme();
 
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, {opacity: style.opacity}]}>
       <View style={styles.titleContainer}>
         <View style={styles.icon}>{icon}</View>
         <Text style={styles.title} category="label">
@@ -45,7 +48,7 @@ const SectionHeader = ({
           </Text>
         </TouchableOpacity>
       )}
-    </View>
+    </Animated.View>
   );
 };
 

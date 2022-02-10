@@ -5,6 +5,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as eva from '@eva-design/eva';
 import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
+import Toast from 'react-native-toast-message';
 
 import environment from 'graphql/environment';
 import UserDataProvider from './hooks/useUserData';
@@ -36,6 +37,7 @@ const withProviders = (Component: ElementType) => {
               <NavigationContainer linking={linking}>
                 <SafeAreaProvider>
                   <Component {...props} loading={loadingApp} />
+                  <Toast />
                 </SafeAreaProvider>
               </NavigationContainer>
             </RelayEnvironmentProvider>

@@ -23116,6 +23116,20 @@ export type WorkflowRunPendingDeploymentRequestsArgs = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
+export type CreateAppIssueMutationMutationVariables = Exact<{
+  input: CreateIssueInput;
+}>;
+
+
+export type CreateAppIssueMutationMutation = { __typename?: 'Mutation', createIssue?: { __typename?: 'CreateIssuePayload', clientMutationId?: string | null | undefined, issue?: { __typename?: 'Issue', url: any } | null | undefined } | null | undefined };
+
+export type GetAppIssueTemplatesQueryQueryVariables = Exact<{
+  repository: Scalars['String'];
+}>;
+
+
+export type GetAppIssueTemplatesQueryQuery = { __typename?: 'Query', search: { __typename?: 'SearchResultItemConnection', repositoryCount: number, edges?: Array<{ __typename?: 'SearchResultItemEdge', node?: { __typename?: 'App' } | { __typename?: 'Discussion' } | { __typename?: 'Issue' } | { __typename?: 'MarketplaceListing' } | { __typename?: 'Organization' } | { __typename?: 'PullRequest' } | { __typename?: 'Repository', id: string, issueTemplates?: Array<{ __typename?: 'IssueTemplate', about?: string | null | undefined, name: string, body?: string | null | undefined, title?: string | null | undefined }> | null | undefined } | { __typename?: 'User' } | null | undefined } | null | undefined> | null | undefined } };
+
 export type GetOrganizationMembersQueryQueryVariables = Exact<{
   login: Scalars['String'];
   after?: InputMaybe<Scalars['String']>;

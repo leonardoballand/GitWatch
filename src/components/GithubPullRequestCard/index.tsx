@@ -10,10 +10,8 @@ import {GQLUser} from 'graphql/schema';
 interface IGithubPullRequestCard {
   icon: JSX.Element | null;
   title: string;
-  description: string;
   label: string;
   author: string;
-  branch: string;
   time: Date;
   reviewers: GQLUser[];
   onPress: () => void;
@@ -23,10 +21,8 @@ interface IGithubPullRequestCard {
 const GithubPullRequestCard = ({
   icon,
   title,
-  description,
   label,
   author,
-  branch,
   time,
   reviewers,
   onPress,
@@ -63,10 +59,12 @@ const GithubPullRequestCard = ({
             <Text category="s1" style={styles.title}>
               {title}
             </Text>
+
             <View style={{flexDirection: 'row'}}>
               <Text category="c1">
                 {isDraft ? 'Draft by' : 'Review requested by'}
               </Text>
+
               <Text style={{marginLeft: 4}} category="c2">
                 {author}
               </Text>
@@ -79,11 +77,11 @@ const GithubPullRequestCard = ({
                 <Avatar
                   style={{marginHorizontal: 4}}
                   size="small"
-                  source={{uri: reviewer.avatarUrl}}
+                  source={{uri: reviewer?.avatarUrl}}
                 />
               ))}
             </View>
-            {/* <Tag>{branch}</Tag> */}
+
             <Text category="c2">{formatDistanceToNow(time)} ago</Text>
           </View>
         </View>

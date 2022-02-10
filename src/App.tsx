@@ -15,6 +15,7 @@ import PullRequestDetailsScreen from 'screens/Authorized/PullRequestDetails';
 import withProviders from 'withProviders';
 import {AppStackParamsList} from 'types';
 import ManageAccountScreen from 'screens/Authorized/SettingsScreen/ManageAccountScreen';
+import FeedbacksScreen from 'screens/Authorized/SettingsScreen/FeedbacksScreen';
 
 enableFreeze(true);
 
@@ -123,6 +124,14 @@ const App = withProviders(({loading}: IProps) => {
           <Screen
             name="PullRequestDetails"
             component={PullRequestDetailsScreen}
+          />
+
+          <Screen
+            name="Feedbacks"
+            component={FeedbacksScreen}
+            options={{
+              presentation: 'formSheet',
+            }}
           />
         </>
       ) : (
