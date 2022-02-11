@@ -78,3 +78,43 @@ export const ActionStoppedIcon = (props: any) => (
 export const ActionPendingIcon = (props: any) => (
   <Octicon {...props} size={24} name="primitive-dot" color="rgb(158, 106, 3)" />
 );
+
+export const LogoutIcon = (props: any) => (
+  <Icon {...props} name="power-settings-new" size={24} />
+);
+
+export const ChevronIcon = (props: any) => (
+  <Icon {...props} name="chevron-right" size={24} />
+);
+
+export const AccountIcon = (props: any) => (
+  <Icon {...props} name="person" size={24} color="#2ecc71" />
+);
+
+export const LocationIcon = (props: any) => (
+  <Icon {...props} name="place" size={24} color="#3498db" />
+);
+
+export const ManagerIcon = (props: any) => (
+  <Icon {...props} name="admin-panel-settings" size={24} color="#9b59b6" />
+);
+
+export const RepositoriesIcon = (props: any) => (
+  <Icon {...props} name="backup" size={24} color="#e74c3c" />
+);
+
+export const PrivacyIcon = (props: any) => (
+  <Icon {...props} name="security" size={24} color="#34495e" />
+);
+
+export const TermsIcon = (props: any) => (
+  <Icon {...props} name="description" size={24} color="#7f8c8d" />
+);
+
+export const HelpIcon = (props: any) => (
+  <Icon {...props} name="support" size={24} color="#f39c12" />
+);
+
+export const AboutIcon = (props: any) => (
+  <Icon {...props} name="perm-device-info" size={24} color="#2c3e50" />
+);

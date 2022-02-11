@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>VERSION_CODE</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>VERSION_NAME</key>
+	<string>$(MARKETING_VERSION)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>itms-services</string>

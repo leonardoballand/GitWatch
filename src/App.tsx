@@ -19,6 +19,7 @@ import FeedbacksScreen from 'screens/Authorized/SettingsScreen/FeedbacksScreen';
 import useFirebaseUpdates from 'hooks/useFirebaseUpdates';
 import AppUpdateScreen from 'screens/Authorized/AppUpdateScreen';
 import {FirebaseAppDistributionTypes} from '@react-native-firebase/app-distribution';
+import AboutScreen from 'screens/Authorized/SettingsScreen/AboutScreen';
 
 enableFreeze(true);
 
@@ -150,6 +151,8 @@ const App = withProviders(({loading}: IProps) => {
               presentation: 'formSheet',
             }}
           />
+
+          <Screen name="About" component={AboutScreen} />
         </>
       ) : (
         <>

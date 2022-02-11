@@ -30,6 +30,7 @@ export type AppStackParamsList = {
   ManageAccount: undefined;
   Feedbacks: undefined;
   AppUpdate: FirebaseAppDistributionTypes.AppDistributionRelease;
+  About: undefined;
 };
 
 export type TabStackParamsList = {

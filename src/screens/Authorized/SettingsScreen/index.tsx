@@ -7,7 +7,6 @@ import {
   Divider,
   Toggle,
 } from '@ui-kitten/components';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -20,43 +19,19 @@ import appDistribution, {
 import {useUserData} from 'hooks/useUserData';
 import {GitWatchUser, TabStackParamsList} from 'types';
 import AppHeader from 'components/AppHeader';
-import {NotificationsIcon} from 'components/Icons';
-
-const LogoutIcon = (props: any) => (
-  <Icon {...props} name="power-settings-new" size={24} />
-);
-
-const ChevronIcon = (props: any) => (
-  <Icon {...props} name="chevron-right" size={24} />
-);
-
-const AccountIcon = (props: any) => (
-  <Icon {...props} name="person" size={24} color="#2ecc71" />
-);
-
-const LocationIcon = (props: any) => (
-  <Icon {...props} name="place" size={24} color="#3498db" />
-);
-
-const ManagerIcon = (props: any) => (
-  <Icon {...props} name="admin-panel-settings" size={24} color="#9b59b6" />
-);
-
-const RepositoriesIcon = (props: any) => (
-  <Icon {...props} name="backup" size={24} color="#e74c3c" />
-);
-
-const PrivacyIcon = (props: any) => (
-  <Icon {...props} name="security" size={24} color="#34495e" />
-);
-
-const TermsIcon = (props: any) => (
-  <Icon {...props} name="description" size={24} color="#7f8c8d" />
-);
-
-const HelpIcon = (props: any) => (
-  <Icon {...props} name="support" size={24} color="#f39c12" />
-);
+import {
+  AboutIcon,
+  AccountIcon,
+  ChevronIcon,
+  HelpIcon,
+  LocationIcon,
+  LogoutIcon,
+  ManagerIcon,
+  NotificationsIcon,
+  PrivacyIcon,
+  RepositoriesIcon,
+  TermsIcon,
+} from 'components/Icons';
 
 type Props = NativeStackScreenProps<TabStackParamsList, 'Settings'>;
 
@@ -90,6 +65,8 @@ function SettingsScreen() {
   const goToManageAccount = () => navigate('ManageAccount');
 
   const goToFeedbacks = () => navigate('Feedbacks');
+
+  const goToAbout = () => navigate('About');
 
   const renderRightActions = () => {
     return <TopNavigationAction icon={LogoutIcon} onPress={logout} />;
@@ -295,6 +272,13 @@ function SettingsScreen() {
           OTHER
         </Text>
 
+        <Divider />
+        <ListItem
+          title="About"
+          accessoryLeft={AboutIcon}
+          accessoryRight={ChevronIcon}
+          onPress={goToAbout}
+        />
         <ListItem
           title="Privacy policy"
           accessoryLeft={PrivacyIcon}
@@ -314,6 +298,11 @@ function SettingsScreen() {
           accessoryLeft={HelpIcon}
           // accessoryRight={ChevronIcon}
           onPress={goToFeedbacks}
+        />
+
+        <Text
+          style={{marginHorizontal: 16, marginVertical: 16, color: 'darkgrey'}}
+          category="label"
         />
       </ScrollView>
 
