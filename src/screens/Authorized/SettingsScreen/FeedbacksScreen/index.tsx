@@ -182,7 +182,11 @@ function FeedbacksScreen() {
                 setFieldValue('issueTemplate', itemValue);
               }}>
               {templates.map(template => (
-                <Picker.Item label={template.name} value={template.name} />
+                <Picker.Item
+                  key={template.name}
+                  label={template.name}
+                  value={template.name}
+                />
               ))}
             </Picker>
 

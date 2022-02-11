@@ -2,7 +2,6 @@ import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {Avatar, Text, useTheme} from '@ui-kitten/components';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import Tag from 'components/Tag';
 
 import styles from './index.style';
 import {GQLUser} from 'graphql/schema';

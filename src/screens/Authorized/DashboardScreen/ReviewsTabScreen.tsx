@@ -1,9 +1,9 @@
 import React from 'react';
 import {ImageProps, RefreshControl, ScrollView} from 'react-native';
-import {Avatar, ListItem, Text} from '@ui-kitten/components';
+import {Avatar, Divider, ListItem, Text} from '@ui-kitten/components';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-// import openExternalLink from 'utils/openExternalLink';
+import openExternalLink from 'utils/openExternalLink';
 import {GQLPullRequest, GQLRepository} from 'graphql/schema';
 import {useUserData} from 'hooks/useUserData';
 import getRepositoriesReviews from 'api/github/getRepositoriesReviews';
@@ -50,6 +50,8 @@ const ReviewsTabScreen = ({}: IReviewsTab) => {
     <Text category="c1">{author}</Text>
   );
 
+  const openReview = (url: string) => openExternalLink(url);
+
   // Firestore listener for user repositories
   React.useEffect(() => {
     const userId = auth().currentUser?.uid;
@@ -75,8 +77,6 @@ const ReviewsTabScreen = ({}: IReviewsTab) => {
       style={{flex: 1, backgroundColor: '#F8F8F8'}}
       contentContainerStyle={{
         flexGrow: 1,
-        marginHorizontal: 16,
-        paddingTop: 24,
       }}
       showsVerticalScrollIndicator={false}
       refreshControl={
@@ -84,20 +84,25 @@ const ReviewsTabScreen = ({}: IReviewsTab) => {
       }>
       {reviews?.length ? (
         reviews.map(review => (
-          <ListItem
-            title={review.title}
-            description={review.repository.name}
-            accessoryLeft={props =>
-              renderItemImage(review.repository.owner.avatarUrl, props)
-            }
-            accessoryRight={() =>
-              renderItemAuthor(
-                `${review.changedFiles} file${
-                  review.changedFiles > 1 ? 's' : ''
-                } changed`,
-              )
-            }
-          />
+          <React.Fragment key={review.id}>
+            <ListItem
+              key={review.id}
+              title={review.title}
+              description={review.repository.name}
+              accessoryLeft={props =>
+                renderItemImage(review.repository.owner.avatarUrl, props)
+              }
+              accessoryRight={() =>
+                renderItemAuthor(
+                  `${review.changedFiles} file${
+                    review.changedFiles > 1 ? 's' : ''
+                  } changed`,
+                )
+              }
+              onPress={() => openReview(review.url)}
+            />
+            <Divider />
+          </React.Fragment>
         ))
       ) : (
         <Text appearance="hint" category="c1">

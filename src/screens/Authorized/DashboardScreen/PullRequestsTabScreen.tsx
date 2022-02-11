@@ -90,7 +90,7 @@ const PullRequestsTabScreen = ({}: IPullRequestsTab) => {
 
   return (
     <ScrollView
-      style={{flex: 1}}
+      style={{flex: 1, backgroundColor: '#F8F8F8'}}
       contentContainerStyle={{flexGrow: 1, marginHorizontal: 16}}
       showsVerticalScrollIndicator={false}
       refreshControl={
