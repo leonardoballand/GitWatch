@@ -7,6 +7,7 @@ import {
   Divider,
   Toggle,
 } from '@ui-kitten/components';
+import type {CompositeScreenProps} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -17,7 +18,7 @@ import appDistribution, {
   FirebaseAppDistributionTypes,
 } from '@react-native-firebase/app-distribution';
 import {useUserData} from 'hooks/useUserData';
-import {GitWatchUser, TabStackParamsList} from 'types';
+import {AppStackParamsList, GitWatchUser, TabStackParamsList} from 'types';
 import AppHeader from 'components/AppHeader';
 import {
   AboutIcon,
@@ -33,7 +34,10 @@ import {
   TermsIcon,
 } from 'components/Icons';
 
-type Props = NativeStackScreenProps<TabStackParamsList, 'Settings'>;
+type Props = CompositeScreenProps<
+  NativeStackScreenProps<TabStackParamsList, 'Settings'>,
+  NativeStackScreenProps<AppStackParamsList>
+>;
 
 type NavigationProps = Props['navigation'];
 
