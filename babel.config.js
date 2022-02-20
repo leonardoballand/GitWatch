@@ -14,6 +14,7 @@ module.exports = {
         extensions: ['.ios.js', '.android.js', '.js', '.ts', '.tsx', '.json'],
         alias: {
           '*': './src/*',
+          'test-utils': './test-utils',
         },
       },
     ],

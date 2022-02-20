@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, {FC} from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
 
-import type { IUserData, ValueOf } from './userData/types';
-import { useUserData } from '.';
+import type {IUserData, ValueOf} from './userData/types';
+import {useUserData} from '.';
 
 interface IProps {
   testData?: IUserData;
@@ -12,8 +12,8 @@ interface IProps {
   };
 }
 
-const UserDataTesting: FC<IProps> = ({ testData, customData }) => {
-  const { getUser, setUser, deleteUser } = useUserData();
+const UserDataTesting: FC<IProps> = ({testData, customData}) => {
+  const {getUser, setUser, deleteUser} = useUserData();
 
   return (
     <View>
@@ -26,24 +26,21 @@ const UserDataTesting: FC<IProps> = ({ testData, customData }) => {
 
       <TouchableOpacity
         testID="USER_INIT_BUTTON"
-        onPress={() => setUser(null, testData)}
-      >
+        onPress={() => setUser(null, testData)}>
         <Text>Initialize user with test data</Text>
       </TouchableOpacity>
 
       {customData && (
         <TouchableOpacity
           testID="USER_SET_CUSTOM_KEY_BUTTON"
-          onPress={() => setUser(customData.key, customData.value)}
-        >
+          onPress={() => setUser(customData.key, customData.value)}>
           <Text>Set custom key text value</Text>
         </TouchableOpacity>
       )}
 
       <TouchableOpacity
         testID="USER_REMOVE_BUTTON"
-        onPress={() => deleteUser()}
-      >
+        onPress={() => deleteUser()}>
         <Text>Remove user data</Text>
       </TouchableOpacity>
     </View>

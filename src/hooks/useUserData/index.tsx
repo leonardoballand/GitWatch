@@ -1,4 +1,11 @@
-import React, {useContext, useReducer, createContext, useEffect} from 'react';
+import React, {
+  useContext,
+  useReducer,
+  createContext,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import EventEmitter from 'events';
 
@@ -8,6 +15,7 @@ import type {
   DeleteUser,
   GetUser,
   IUserData,
+  KeyOf,
   OnError,
   OnLoadEnd,
   SetUser,
@@ -18,12 +26,8 @@ let USER_DATA_SESSION_KEY = 'user_session';
 let IS_WRITING = false;
 const StorageEmitter = new EventEmitter();
 
-interface CustomT {
-  [key: string]: any;
-}
-
-export interface IUserDataContext<T> {
-  data: T | null;
+export interface IUserDataContext {
+  data: IUserData | null;
   getUser: GetUser;
   setUser: SetUser;
   deleteUser: DeleteUser;
@@ -62,53 +66,52 @@ const UserDataProvider: React.FC<IProps> = ({
    * When prop is passed, it returns the specified key from user data
    * When prop is undefined, it returns the complete user data
    */
-  const getUser = <T extends CustomT>(
-    prop?: keyof IUserData<T>,
-  ): ValueOf<IUserData<T>> | null | IUserData<T> => {
-    if (prop) {
-      if (Object.prototype.hasOwnProperty.call(userData, prop)) {
-        return userData[prop];
+  const getUser = useCallback(
+    (prop?: keyof IUserData): ValueOf<IUserData> | null | IUserData => {
+      if (prop) {
+        if (Object.prototype.hasOwnProperty.call(userData, prop)) {
+          return userData ? userData[prop] : null;
+        }
+
+        console.error(`Error: Cannot find property ${prop} in UserData`);
+        onError(`Error: Cannot find property ${prop} in UserData`);
+        return null;
       }
 
-      console.warn(`Error: Cannot find property ${prop} in UserData`);
-      onError(`Error: Cannot find property ${prop} in UserData`);
-      return null;
-    }
-
-    return userData;
-  };
+      return userData;
+    },
+    [onError, userData],
+  );
 
   /** Set user data
    *
    * when prop is null, value must be an object and will replace any user data
    * when prop is specified, only the user data prop will be set
    */
-  const setUser = async <T extends CustomT>(
-    prop: keyof IUserData<T> | null,
-    value: ValueOf<IUserData<T>> | IUserData<T>,
+  const setUser = (
+    prop: keyof IUserData | null,
+    value: ValueOf<IUserData> | IUserData,
   ) => {
-    const localData = userData ?? {};
-
     if (prop) {
-      await writeUserData({...localData, [prop]: value});
-      userDataDispatch(setUserData(prop, value as ValueOf<IUserData<T>>));
+      userDataDispatch(setUserData(prop, value as ValueOf<IUserData>));
     } else {
-      await writeUserData({...localData, ...(value as IUserData<T>)});
-      userDataDispatch(setData(value as IUserData<T>));
+      userDataDispatch(setData(value as IUserData));
     }
   };
 
   const deleteUser = () => userDataDispatch(deleteData());
 
-  const userDataContext: IUserDataContext = {
-    data: userData,
-    getUser,
-    setUser,
-    deleteUser,
-  };
+  const userDataContext: IUserDataContext = useMemo(
+    () => ({
+      data: userData,
+      getUser,
+      setUser,
+      deleteUser,
+    }),
+    [getUser, userData],
+  );
 
-  const onUserSetLocally = <T extends CustomT>(data: IUserData<T>) =>
-    setUser(null, data);
+  const onUserSetLocally = (data: IUserData) => setUser(null, data);
 
   // Restore previous user data on mount
   // Change session_name to disable restore on app first launch
@@ -116,7 +119,7 @@ const UserDataProvider: React.FC<IProps> = ({
     async function restore() {
       try {
         if (restoreOnMount) {
-          const data = await EncryptedStorage.getItem(getUserDataSessionKey());
+          const data = await EncryptedStorage.getItem(sessionName);
 
           if (data) {
             if (__DEV__) {
@@ -125,11 +128,9 @@ const UserDataProvider: React.FC<IProps> = ({
               );
             }
 
-            setUser(null, JSON.parse(data));
+            setUser(null, JSON.parse(data) as IUserData);
             onLoadEnd();
           }
-
-          onLoadEnd();
         }
       } catch (e) {
         console.warn(
@@ -192,12 +193,11 @@ const UserDataProvider: React.FC<IProps> = ({
 
 export default UserDataProvider;
 
-export const useUserData = <T extends CustomT>() =>
-  useContext<IUserDataContext<T>>(UserDataContext);
+export const useUserData = () => useContext<IUserDataContext>(UserDataContext);
 
-export const withUserDataContext = <T extends CustomT>(Component: any) => {
-  return function WrapperComponent(props: any) {
-    const userDataContext = useContext<IUserDataContext<T>>(UserDataContext);
+export const withUserDataContext = (Component: any) =>
+  function WrapperComponent(props: any) {
+    const userDataContext = useContext<IUserDataContext>(UserDataContext);
 
     return (
       <UserDataContext.Consumer>
@@ -205,16 +205,15 @@ export const withUserDataContext = <T extends CustomT>(Component: any) => {
       </UserDataContext.Consumer>
     );
   };
-};
 
-async function readUserData<T extends CustomT>(): Promise<T | null> {
+async function readUserData<T extends {}>(): Promise<T | null> {
   try {
     if (IS_WRITING) {
       await delay(500);
     }
     const data = await EncryptedStorage.getItem(USER_DATA_SESSION_KEY);
     if (data !== '{}') {
-      return JSON.parse(data!);
+      return JSON.parse(data!) as T;
     }
 
     return null;
@@ -230,9 +229,7 @@ async function readUserData<T extends CustomT>(): Promise<T | null> {
   }
 }
 
-async function writeUserData<T extends CustomT>(
-  data: IUserData<T>,
-): Promise<void> {
+async function writeUserData<T extends {}>(data: T): Promise<void> {
   try {
     IS_WRITING = true;
     await EncryptedStorage.setItem(USER_DATA_SESSION_KEY, JSON.stringify(data));
@@ -242,7 +239,7 @@ async function writeUserData<T extends CustomT>(
         'error',
         `getUserData: An error occurred writing user data. => ${String(e)}`,
       );
-      console.warn('getUserData: An error occurred writing user data.', e);
+      console.error('getUserData: An error occurred writing user data.', e);
     }
   } finally {
     IS_WRITING = false;
@@ -265,8 +262,8 @@ async function removeUserData() {
   }
 }
 
-export const getUserLocally = async <T extends CustomT>(
-  prop?: keyof T,
+export const getUserLocally = async <T extends {}>(
+  prop?: KeyOf<T>,
 ): Promise<ValueOf<T> | null | T> => {
   const userData = await readUserData<T>();
 
@@ -300,16 +297,16 @@ export const getUserLocally = async <T extends CustomT>(
   return null;
 };
 
-export const setUserLocally = async <T extends CustomT>(
-  prop: keyof IUserData<T> | null,
-  value: ValueOf<IUserData<T>> | IUserData<T>,
+export const setUserLocally = async <T extends {}>(
+  prop: KeyOf<T> | null,
+  value: ValueOf<T> | T,
 ) => {
   if (prop) {
-    const userData = await readUserData<T>();
+    const userData = await readUserData();
     await writeUserData({...userData, [prop]: value});
     StorageEmitter.emit('setUserLocally', {...userData, [prop]: value});
   } else {
-    await writeUserData(value as IUserData<T>);
+    await writeUserData(value as IUserData);
     StorageEmitter.emit('setUserLocally', value);
   }
 };
@@ -319,7 +316,7 @@ export const deleteUserLocally = async () => {
   StorageEmitter.emit('deleteUserLocally');
 };
 
-export const getUserDataSessionKey = () => USER_DATA_SESSION_KEY;
+export const getUserDataSessionKey = (): string => USER_DATA_SESSION_KEY;
 
 // TODO: Update HOC when update has been done
 export const updateUserDataSessionKey = (newSessionKey: string): string => {
