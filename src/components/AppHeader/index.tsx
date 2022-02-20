@@ -1,11 +1,12 @@
 import React from 'react';
 import {Text} from '@ui-kitten/components';
-import {StatusBar, View} from 'react-native';
+import {View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import styles from './index.style';
 
 interface IHeader {
+  testID?: string;
   title: string;
   description?: string;
   level?: number;
@@ -15,6 +16,7 @@ interface IHeader {
 }
 
 const AppHeader = ({
+  testID = 'AppHeader',
   title,
   description = '',
   level = 1,
@@ -24,14 +26,23 @@ const AppHeader = ({
 }: IHeader) => {
   return (
     <SafeAreaView
+      testID={testID}
       style={styles.container(color)}
       edges={['top', 'left', 'right']}>
-      <View style={styles.navigation}>
+      <View testID={`${testID}-navigation`} style={styles.navigation}>
         <View>{accessoryLeft()}</View>
         <View>{accessoryRight()}</View>
       </View>
-      <Text category={`h${level}`}>{title}</Text>
-      <Text category="c1">{description}</Text>
+
+      <Text testID={`${testID}-title`} category={`h${level}`}>
+        {title}
+      </Text>
+
+      {!!description && (
+        <Text testID={`${testID}-description`} category="c1">
+          {description}
+        </Text>
+      )}
     </SafeAreaView>
   );
 };

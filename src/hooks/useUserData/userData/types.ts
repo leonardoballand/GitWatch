@@ -1,5 +1,7 @@
 import type {SET_USER_DATA, DELETE_DATA, SET_DATA} from './constants';
 
+export type KeyOf<T> = keyof T;
+
 export type ValueOf<T> = T[keyof T];
 
 export type UserProfile = {
@@ -9,7 +11,31 @@ export type UserProfile = {
 
 export type Locale = 'fr' | 'en' | 'es' | 'de' | 'da' | 'fr_CA';
 
-export interface IUserData<T> {}
+export type UserAuthType = 'signin' | 'signout';
+
+export interface IUserData {
+  accounting_firm?: {id: number; locale: string};
+  deviceId?: string;
+  deviceName?: string;
+  email?: string;
+  fcmToken?: string;
+  firstname?: string;
+  id?: string;
+  isClient?: boolean;
+  last_login?: string;
+  lastname?: string;
+  locale?: Locale;
+  profile?: UserProfile;
+  refreshToken?: string | null;
+  roles?: [string] | [];
+  token?: string | null;
+  user_terms?: string | null;
+  channels?: string[];
+  required?: string[];
+  warnings?: string[];
+  authType?: UserAuthType;
+  accessGranted?: boolean;
+}
 
 export type SetDataAction = {
   type: typeof SET_DATA;

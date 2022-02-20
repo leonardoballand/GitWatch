@@ -1,0 +1,9 @@
+node_modules/
+testSetup.js
+coverage/
+assets/
+ios/
+android/
+.vscode/
+.github/
+.bundle/

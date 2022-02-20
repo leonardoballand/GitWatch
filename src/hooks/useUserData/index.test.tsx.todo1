@@ -7,8 +7,6 @@ import type {IUserData, ValueOf} from './userData/types';
 
 import UserDataProvider from './index';
 
-jest.useFakeTimers();
-
 // const TEST_SAVED_DATA = {
 //     firstname: 'Benjamin',
 //     lastname: 'Mico',

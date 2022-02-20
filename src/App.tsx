@@ -13,7 +13,7 @@ import HomeScreen from 'screens/Authorized/HomeScreen';
 import ConfigurationScreen from 'screens/Authorized/ConfigurationScreen';
 import PullRequestDetailsScreen from 'screens/Authorized/PullRequestDetails';
 import withProviders from 'withProviders';
-import {AppStackParamsList} from 'types';
+import {AppStackParamsList, GitWatchUser} from 'types';
 import ManageAccountScreen from 'screens/Authorized/SettingsScreen/ManageAccountScreen';
 import FeedbacksScreen from 'screens/Authorized/SettingsScreen/FeedbacksScreen';
 import useFirebaseUpdates from 'hooks/useFirebaseUpdates';
@@ -30,7 +30,7 @@ interface IProps {
 }
 
 const App = withProviders(({loading}: IProps) => {
-  const {data: userData, deleteUser} = useUserData();
+  const {data: userData, deleteUser} = useUserData<GitWatchUser>();
   const {navigate} = useNavigation<NavigationProp<AppStackParamsList>>();
 
   const openAppUpdateModal = (
