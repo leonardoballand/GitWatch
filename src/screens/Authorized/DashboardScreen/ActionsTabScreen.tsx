@@ -12,13 +12,13 @@ import {
 } from 'components/Icons';
 import openExternalLink from 'utils/openExternalLink';
 import {GQLRepository, GQLWorkflow} from 'graphql/schema';
-import {useUserData} from 'hooks/useUserData';
 import getRepositoryGithubActions from 'api/github/getRepositoryGithubActions';
+import useStore from 'store';
 
 interface IActionsTab {}
 
 const ActionsTabScreen = ({}: IActionsTab) => {
-  const {data: userData} = useUserData();
+  const {user} = useStore(state => ({user: state.user}));
 
   const [repositories, setRepositories] = React.useState<GQLRepository[]>([]);
   const [workflows, setWorkflows] = useState<GQLWorkflow[]>([]);
@@ -26,7 +26,7 @@ const ActionsTabScreen = ({}: IActionsTab) => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const getActionsFromRepositories = async () => {
-    const showWorkflowUserOnly = !userData?.managerMode;
+    const showWorkflowUserOnly = !user?.managerMode;
 
     const promises = repositories!.map(repository =>
       getRepositoryGithubActions(repository.owner.login, repository.name),
@@ -53,8 +53,8 @@ const ActionsTabScreen = ({}: IActionsTab) => {
 
       // remove actions when user is not author
       return (
-        workflow.head_commit.author.email === userData?.email ||
-        workflow.head_commit.author.name === userData?.name
+        workflow.head_commit.author.email === user?.email ||
+        workflow.head_commit.author.name === user?.name
       );
     });
 
@@ -115,7 +115,7 @@ const ActionsTabScreen = ({}: IActionsTab) => {
   // Fetch repositories actions
   React.useEffect(() => {
     getActionsFromRepositories();
-  }, [repositories, userData?.managerMode]);
+  }, [repositories, user?.managerMode]);
 
   return (
     <ScrollView

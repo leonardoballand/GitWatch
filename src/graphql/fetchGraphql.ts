@@ -1,8 +1,10 @@
-import {getUserLocally} from '../hooks/useUserData';
-import type {GitWatchUser} from 'types';
+import useStore from 'store';
 
 async function fetchGraphQL(text: string, variables: any) {
-  const GITHUB_AUTH_TOKEN = await getUserLocally<GitWatchUser>('accessToken');
+  console.log('fetch user', useStore.getState().user);
+  const GITHUB_AUTH_TOKEN = useStore.getState().user.accessToken;
+
+  console.log('token', GITHUB_AUTH_TOKEN);
 
   // Fetch data from GitHub's GraphQL API:
   const response = await fetch('https://api.github.com/graphql', {

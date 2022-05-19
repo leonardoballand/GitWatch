@@ -12,6 +12,8 @@ const getRepositoriesPullRequests = async (
     .toString()
     .replace(/,/g, ' ');
 
+  console.log('repositoriesQuery', repositoriesQuery, repositories);
+
   return new Promise((resolve, reject) => {
     fetchQuery<GetReviewsQueryType>(environment, GetReviewsQuery, {
       query: `is:open is:pr ${repositoriesQuery} archived:false`,

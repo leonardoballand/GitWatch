@@ -16,8 +16,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="BootSplashLogo" translatesAutoresizingMaskIntoConstraints="NO" id="iaO-HQ-SuY">
-                                <rect key="frame" x="145" y="372" width="100" height="100"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="onboard_background.png" translatesAutoresizingMaskIntoConstraints="NO" id="Ypy-Ur-tIs">
+                                <rect key="frame" x="0.0" y="252" width="390" height="380"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="GitWatch.png" translatesAutoresizingMaskIntoConstraints="NO" id="o5q-sm-FEJ">
+                                <rect key="frame" x="75" y="378" width="240" height="128"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
@@ -31,6 +35,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="BootSplashLogo" width="100" height="100"/>
+        <image name="GitWatch.png" width="215" height="39"/>
+        <image name="onboard_background.png" width="840" height="379"/>
     </resources>
 </document>

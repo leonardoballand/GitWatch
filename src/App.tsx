@@ -8,38 +8,37 @@ import {enableFreeze} from 'react-native-screens';
 import SelectRepositoryScreen from 'screens/Authorized/SettingsScreen/SelectRepositoryScreen';
 import OnboardingScreen from 'screens/Unauthorized/OnboardingScreen';
 import LoginScreen from 'screens/Unauthorized/LoginScreen';
-import {useUserData} from './hooks/useUserData';
 import HomeScreen from 'screens/Authorized/HomeScreen';
 import ConfigurationScreen from 'screens/Authorized/ConfigurationScreen';
 import PullRequestDetailsScreen from 'screens/Authorized/PullRequestDetails';
 import withProviders from 'withProviders';
-import {AppStackParamsList, GitWatchUser} from 'types';
+import {AppStackParamsList} from 'types';
 import ManageAccountScreen from 'screens/Authorized/SettingsScreen/ManageAccountScreen';
 import FeedbacksScreen from 'screens/Authorized/SettingsScreen/FeedbacksScreen';
 import useFirebaseUpdates from 'hooks/useFirebaseUpdates';
 import AppUpdateScreen from 'screens/Authorized/AppUpdateScreen';
 import {FirebaseAppDistributionTypes} from '@react-native-firebase/app-distribution';
 import AboutScreen from 'screens/Authorized/SettingsScreen/AboutScreen';
+import useStore from 'store';
 
 enableFreeze(true);
 
 const {Navigator, Screen} = createNativeStackNavigator<AppStackParamsList>();
 
-interface IProps {
-  loading: boolean;
-}
+interface IProps {}
 
-const App = withProviders(({loading}: IProps) => {
-  const {data: userData, deleteUser} = useUserData<GitWatchUser>();
+const App = withProviders(({}: IProps) => {
   const {navigate} = useNavigation<NavigationProp<AppStackParamsList>>();
+  const {user, deleteUser} = useStore(state => ({
+    user: state.user,
+    deleteUser: state.deleteUser,
+  }));
 
   const openAppUpdateModal = (
     data: FirebaseAppDistributionTypes.AppDistributionRelease,
   ) => navigate('AppUpdate', data);
 
   useFirebaseUpdates(openAppUpdateModal);
-
-  const [initializing, setInitializing] = useState(true);
 
   // Handle user state changes
   const onAuthStateChanged = (user: any) => {
@@ -58,43 +57,41 @@ const App = withProviders(({loading}: IProps) => {
 
   useEffect(() => {
     function displayConfiguration() {
-      if (userData?.isNewUser) {
+      if (user?.isNewUser) {
         // LoginScreen set isNewUser + repositories.suggested + organizations.suggested key
         navigate('Configuration', {
-          repositories: userData.repositories.suggested,
-          organizations: userData.organizations.suggested,
+          repositories: user.repositories.suggested,
+          organizations: user.organizations.suggested,
         });
       }
     }
 
     displayConfiguration();
-  }, [userData?.isNewUser]);
+  }, [user?.isNewUser]);
 
   // Initialize app
   // When user is not connected (using Firebase native authentication module)
   // - Set Github data in userData
   // - Initialize Firebase user in Firestore DB
   // - Create user data in Firestore DB
-  useEffect(() => {
-    async function initApp() {
-      if (!loading) {
-        setInitializing(false);
-      }
-    }
+  // useEffect(() => {
+  //   async function initApp() {
+  //     if (!loading) {
+  //       setInitializing(false);
+  //     }
+  //   }
 
-    initApp();
-  }, [loading]);
+  //   initApp();
+  // }, [loading]);
 
   // Remove splashscreen when app is ready
   useEffect(() => {
     function showApp() {
-      if (!initializing) {
-        RNBootSplash.hide({fade: true});
-      }
+      RNBootSplash.hide({fade: true});
     }
 
     showApp();
-  }, [initializing]);
+  }, []);
 
   return (
     <Navigator

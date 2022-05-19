@@ -2,22 +2,32 @@ import {FirebaseAppDistributionTypes} from '@react-native-firebase/app-distribut
 import {GQLPullRequest, GQLRepository} from 'graphql/schema';
 
 export interface GitWatchUser {
-  accessToken: string;
+  accessToken?: string;
   id: string;
   avatarUrl: string;
   email?: string;
   login: string;
-  managerMode: boolean;
+  managerMode?: boolean;
   location?: string;
   company?: string;
   name: string;
   firstName: string;
   lastName: string;
+  isNewUser?: boolean;
+  repositories?: {
+    suggested: GQLRepository[];
+  };
+  organizations?: {
+    suggested: string[];
+  };
 }
 
 export type AppStackParamsList = {
   Home: undefined;
-  Onboarding: undefined;
+  Onboarding: {
+    code: string;
+    state: string;
+  };
   Login: undefined;
   SelectRepositories: undefined;
   PullRequestDetails: {

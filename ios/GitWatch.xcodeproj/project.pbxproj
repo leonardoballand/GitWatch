@@ -14,6 +14,9 @@
 		629EA45BBC73BBD142184D1F /* libPods-GitWatch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27CA0F67D1B8024DD8DB9DE7 /* libPods-GitWatch.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A7443576279C3162006F68F1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A7443575279C3162006F68F1 /* GoogleService-Info.plist */; };
+		A74446DA27C6A1FC0061077D /* Nunito-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A74446D927C6A1F40061077D /* Nunito-VariableFont_wght.ttf */; };
+		A74446DD27C6A3820061077D /* onboard_background.png in Resources */ = {isa = PBXBuildFile; fileRef = A74446DB27C6A3810061077D /* onboard_background.png */; };
+		A74446DE27C6A3820061077D /* GitWatch.png in Resources */ = {isa = PBXBuildFile; fileRef = A74446DC27C6A3810061077D /* GitWatch.png */; };
 		A7E856A827B0A2F30080E305 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = A7E856A727B0A2F20080E305 /* logo.png */; };
 		D72F3FBAEB4A2C4B0003239B /* libPods-GitWatch-GitWatchTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BE61B5FAE8F44273DDE5C1C0 /* libPods-GitWatch-GitWatchTests.a */; };
 /* End PBXBuildFile section */
@@ -45,6 +48,9 @@
 		A7431CD927314E9C00E55250 /* GitWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = GitWatch.entitlements; path = GitWatch/GitWatch.entitlements; sourceTree = "<group>"; };
 		A7443575279C3162006F68F1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		A744357727A16E40006F68F1 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
+		A74446D927C6A1F40061077D /* Nunito-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Nunito-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		A74446DB27C6A3810061077D /* onboard_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = onboard_background.png; sourceTree = "<group>"; };
+		A74446DC27C6A3810061077D /* GitWatch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GitWatch.png; sourceTree = "<group>"; };
 		A749C2E5275EC1D5008E6B48 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
 		A749C2EF275EC1D5008E6B48 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
 		A7E856A727B0A2F20080E305 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = Images/logo.png; sourceTree = "<group>"; };
@@ -94,6 +100,8 @@
 		13B07FAE1A68108700A75B9A /* GitWatch */ = {
 			isa = PBXGroup;
 			children = (
+				A74446DC27C6A3810061077D /* GitWatch.png */,
+				A74446DB27C6A3810061077D /* onboard_background.png */,
 				A7E856A727B0A2F20080E305 /* logo.png */,
 				A7443575279C3162006F68F1 /* GoogleService-Info.plist */,
 				A749C2DF275EC1D5008E6B48 /* Fonts */,
@@ -152,6 +160,7 @@
 		A749C2DF275EC1D5008E6B48 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				A74446D927C6A1F40061077D /* Nunito-VariableFont_wght.ttf */,
 				A744357727A16E40006F68F1 /* Octicons.ttf */,
 				A749C2E5275EC1D5008E6B48 /* MaterialCommunityIcons.ttf */,
 				A749C2EF275EC1D5008E6B48 /* MaterialIcons.ttf */,
@@ -268,7 +277,10 @@
 				A7E856A827B0A2F30080E305 /* logo.png in Resources */,
 				A7443576279C3162006F68F1 /* GoogleService-Info.plist in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				A74446DA27C6A1FC0061077D /* Nunito-VariableFont_wght.ttf in Resources */,
+				A74446DE27C6A3820061077D /* GitWatch.png in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				A74446DD27C6A3820061077D /* onboard_background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

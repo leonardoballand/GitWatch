@@ -19,8 +19,9 @@ const styles: IStyles = {
   slide: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     backgroundColor: '#ffffff',
+    paddingBottom: 72,
   },
   title: {
     fontSize: 22,

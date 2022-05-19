@@ -10,10 +10,10 @@ import {
   GQLPullRequestReviewDecision,
   GQLRepository,
 } from 'graphql/schema';
-import {useUserData} from 'hooks/useUserData';
 import GithubPullRequestCard from 'components/GithubPullRequestCard';
 import getRepositoriesPullRequests from 'api/github/getRepositoriesPullRequests';
 import getUserPullRequests from 'api/github/getUserPullRequests';
+import useStore from 'store';
 
 interface IPullRequestsTab {}
 
@@ -21,18 +21,16 @@ const PullRequestsTabScreen = ({}: IPullRequestsTab) => {
   const [repositories, setRepositories] = React.useState<GQLRepository[]>([]);
   const [pullRequests, setPullRequests] = useState<GQLPullRequest[]>();
 
-  const {data: userData} = useUserData();
+  const {user} = useStore(state => ({user: state.user}));
 
   const [refreshing, setRefreshing] = React.useState(false);
 
   const getPullRequests = async () => {
-    if (userData?.managerMode) {
+    if (user?.managerMode) {
       const pullRequests = await getRepositoriesPullRequests(repositories);
       setPullRequests(pullRequests);
     } else {
-      const userPullRequests = await getUserPullRequests(
-        userData?.login as string,
-      );
+      const userPullRequests = await getUserPullRequests(user?.login as string);
       setPullRequests(userPullRequests);
     }
   };
@@ -86,7 +84,7 @@ const PullRequestsTabScreen = ({}: IPullRequestsTab) => {
   // Fetch repositories actions
   React.useEffect(() => {
     getPullRequests();
-  }, [repositories, userData?.managerMode]);
+  }, [repositories, user?.managerMode]);
 
   return (
     <ScrollView
