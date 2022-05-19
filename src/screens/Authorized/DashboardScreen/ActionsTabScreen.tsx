@@ -3,6 +3,7 @@ import {RefreshControl, ScrollView} from 'react-native';
 import {Text} from '@ui-kitten/components';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import Toast from 'react-native-toast-message';
 import GithubActionCard from 'components/GithubActionCard';
 import {
   ActionCompletedIcon,
@@ -26,52 +27,69 @@ const ActionsTabScreen = ({}: IActionsTab) => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const getActionsFromRepositories = async () => {
-    const showWorkflowUserOnly = !user?.managerMode;
+    try {
+      const showWorkflowUserOnly = !user?.managerMode;
 
-    const promises = repositories!.map(repository =>
-      getRepositoryGithubActions(repository.owner.login, repository.name),
-    );
-
-    const repositoriesActions = await Promise.all(promises);
-
-    const activeWorkflows = [].concat.apply(
-      [],
-      repositoriesActions
-        .filter(
-          repositoryActions => repositoryActions.total_count > 0, // remove actions without runs
-        )
-        .map(
-          filteredRepositoryActions => filteredRepositoryActions.workflow_runs,
-        ),
-    );
-
-    const actions = activeWorkflows.filter(workflow => {
-      if (!showWorkflowUserOnly) {
-        // returns all actions
-        return true;
-      }
-
-      // remove actions when user is not author
-      return (
-        workflow.head_commit.author.email === user?.email ||
-        workflow.head_commit.author.name === user?.name
+      const promises = repositories!.map(repository =>
+        getRepositoryGithubActions(repository.owner.login, repository.name),
       );
-    });
 
-    setWorkflows(actions);
+      const repositoriesActions = await Promise.all(promises);
 
-    return;
+      const activeWorkflows = [].concat.apply(
+        [],
+        repositoriesActions
+          .filter(
+            repositoryActions => repositoryActions.total_count > 0, // remove actions without runs
+          )
+          .map(
+            filteredRepositoryActions =>
+              filteredRepositoryActions.workflow_runs,
+          ),
+      );
+
+      const actions = activeWorkflows.filter(workflow => {
+        if (!showWorkflowUserOnly) {
+          // returns all actions
+          return true;
+        }
+
+        // remove actions when user is not author
+        return (
+          workflow.head_commit.author.email === user?.email ||
+          workflow.head_commit.author.name === user?.name
+        );
+      });
+
+      setWorkflows(actions);
+
+      return;
+    } catch (err) {
+      console.log('actions error', err);
+
+      Toast.show({
+        type: 'error',
+        text1: 'An error occurred',
+        text2: 'Could not get actions.',
+      });
+    }
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
 
     try {
-      await Promise.all([getActionsFromRepositories()]).finally(() =>
-        setRefreshing(false),
-      );
+      await Promise.all([getActionsFromRepositories()]);
     } catch (e) {
       console.error(e);
+
+      Toast.show({
+        type: 'error',
+        text1: 'An error occurred',
+        text2: 'Could not refresh actions.',
+      });
+    } finally {
+      setRefreshing(false);
     }
   };
 

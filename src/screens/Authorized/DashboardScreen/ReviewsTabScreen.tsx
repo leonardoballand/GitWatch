@@ -3,6 +3,7 @@ import {ImageProps, RefreshControl, ScrollView} from 'react-native';
 import {Avatar, Divider, ListItem, Text} from '@ui-kitten/components';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import Toast from 'react-native-toast-message';
 import openExternalLink from 'utils/openExternalLink';
 import {GQLPullRequest, GQLRepository} from 'graphql/schema';
 import getRepositoriesReviews from 'api/github/getRepositoriesReviews';
@@ -20,22 +21,40 @@ const ReviewsTabScreen = ({}: IReviewsTab) => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const getReviews = async () => {
-    const userReviews = user?.managerMode
-      ? await getRepositoriesReviews(repositories)
-      : await getUserAssignedReviews(user?.login as string);
+    try {
+      const userReviews = user?.managerMode
+        ? await getRepositoriesReviews(repositories)
+        : await getUserAssignedReviews(user?.login as string);
 
-    setReviews(userReviews);
+      setReviews(userReviews);
 
-    return;
+      return;
+    } catch (err) {
+      console.log('reviews error', err);
+
+      Toast.show({
+        type: 'error',
+        text1: 'An error occurred',
+        text2: 'Could not get reviews.',
+      });
+    }
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
 
     try {
-      await Promise.all([getReviews()]).finally(() => setRefreshing(false));
+      await Promise.all([getReviews()]);
     } catch (e) {
       console.error(e);
+
+      Toast.show({
+        type: 'error',
+        text1: 'An error occurred',
+        text2: 'Could not refresh reviews.',
+      });
+    } finally {
+      setRefreshing(false);
     }
   };
 

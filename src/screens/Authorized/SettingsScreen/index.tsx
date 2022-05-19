@@ -7,6 +7,7 @@ import {
   Divider,
   Toggle,
 } from '@ui-kitten/components';
+import Toast from 'react-native-toast-message';
 import type {CompositeScreenProps} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
@@ -17,7 +18,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import appDistribution, {
   FirebaseAppDistributionTypes,
 } from '@react-native-firebase/app-distribution';
-import {AppStackParamsList, GitWatchUser, TabStackParamsList} from 'types';
+import {AppStackParamsList, TabStackParamsList} from 'types';
 import AppHeader from 'components/AppHeader';
 import {
   AboutIcon,
@@ -98,6 +99,14 @@ function SettingsScreen() {
       });
     } catch (e) {
       console.log('onAppUpdatesChange error', e);
+
+      Toast.show({
+        type: 'error',
+        text1: 'Ooooooops',
+        text2: `Could not ${
+          enabled ? 'enable' : 'disabled'
+        } app updates. Try again!`,
+      });
     } finally {
       setLoading(false);
     }
@@ -121,6 +130,14 @@ function SettingsScreen() {
       .catch(e => {
         setEnableManagerMode(false);
         console.error(e);
+
+        Toast.show({
+          type: 'error',
+          text1: 'Ooooooops!',
+          text2: `Could not ${
+            enabled ? 'enable' : 'disable'
+          } manager mode. Try again!`,
+        });
       })
       .finally(() => {
         setLoading(false);

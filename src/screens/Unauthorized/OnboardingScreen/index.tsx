@@ -5,6 +5,7 @@ import {useRoute} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import firestore from '@react-native-firebase/firestore';
+import Toast from 'react-native-toast-message';
 import getNativeAssetUri from 'utils/getNativeAssetUri';
 import {config} from 'utils/OAuthManager';
 import getUserIssues from 'api/github/getUserIssues';
@@ -79,6 +80,13 @@ function OnboardingScreen() {
           }
         } catch (e) {
           console.log('onCodeReceived error', e);
+
+          Toast.show({
+            type: 'error',
+            text1: 'Oooooops!',
+            text2:
+              'Could not retrieve Github credentials. Try to sign-in again!',
+          });
         }
       }
     }
@@ -173,6 +181,13 @@ function OnboardingScreen() {
         }
       } catch (e) {
         console.log('e', e.source);
+
+        Toast.show({
+          type: 'error',
+          text1: 'Oooooops!',
+          text2:
+            'Sorry but something gone wrong. Please do report to developers team.',
+        });
       } finally {
         setLoading(false);
       }
