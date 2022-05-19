@@ -1,5 +1,5 @@
 import {GQLWorkflowRun} from 'graphql/schema';
-import {getUserLocally} from 'hooks/useUserData';
+import useStore from 'store';
 
 const getCurrentWorkflowRuns = async (
   org: string,
@@ -7,7 +7,7 @@ const getCurrentWorkflowRuns = async (
   perPage: number = 5,
   status: string = 'in_progress',
 ): Promise<GQLWorkflowRun[]> => {
-  const GITHUB_AUTH_TOKEN = await getUserLocally('accessToken');
+  const GITHUB_AUTH_TOKEN = useStore.getState().user.accessToken;
 
   const response = await fetch(
     `https://api.github.com/repos/${org}/${repository}/actions/runs?per_page=${perPage}&status=${status}`,

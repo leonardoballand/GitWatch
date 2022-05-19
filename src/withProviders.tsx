@@ -1,4 +1,4 @@
-import React, {ElementType, useState} from 'react';
+import React, {ElementType} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {RelayEnvironmentProvider} from 'react-relay/hooks';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -8,40 +8,31 @@ import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import Toast from 'react-native-toast-message';
 
 import environment from 'graphql/environment';
-import UserDataProvider from './hooks/useUserData';
 
 const linking = {
   prefixes: ['gitwatch://'],
   config: {
     screens: {
-      Login: 'oauth/:code?',
+      Onboarding: 'oauth/:code?',
     },
   },
 };
 
 const withProviders = (Component: ElementType) => {
   return function WrappedComponent(props: any) {
-    const [loadingApp, setLoadingApp] = useState(true);
-
     return (
       <>
         <IconRegistry icons={EvaIconsPack} />
 
         <ApplicationProvider {...eva} theme={eva.light}>
-          <UserDataProvider
-            restoreOnMount
-            sessionName="user_data"
-            onError={error => console.warn(error)}
-            onLoadEnd={() => setLoadingApp(false)}>
-            <RelayEnvironmentProvider environment={environment}>
-              <NavigationContainer linking={linking}>
-                <SafeAreaProvider>
-                  <Component {...props} loading={loadingApp} />
-                  <Toast />
-                </SafeAreaProvider>
-              </NavigationContainer>
-            </RelayEnvironmentProvider>
-          </UserDataProvider>
+          <RelayEnvironmentProvider environment={environment}>
+            <NavigationContainer linking={linking}>
+              <SafeAreaProvider>
+                <Component {...props} />
+                <Toast />
+              </SafeAreaProvider>
+            </NavigationContainer>
+          </RelayEnvironmentProvider>
         </ApplicationProvider>
       </>
     );

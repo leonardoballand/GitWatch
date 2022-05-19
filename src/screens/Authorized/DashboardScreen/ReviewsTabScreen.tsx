@@ -5,14 +5,14 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import openExternalLink from 'utils/openExternalLink';
 import {GQLPullRequest, GQLRepository} from 'graphql/schema';
-import {useUserData} from 'hooks/useUserData';
 import getRepositoriesReviews from 'api/github/getRepositoriesReviews';
 import getUserAssignedReviews from 'api/github/getUserAssignedReviews';
+import useStore from 'store';
 
 interface IReviewsTab {}
 
 const ReviewsTabScreen = ({}: IReviewsTab) => {
-  const {data: userData} = useUserData();
+  const {user} = useStore(state => ({user: state.user}));
 
   const [repositories, setRepositories] = React.useState<GQLRepository[]>([]);
   const [reviews, setReviews] = React.useState<GQLPullRequest[]>([]);
@@ -20,9 +20,9 @@ const ReviewsTabScreen = ({}: IReviewsTab) => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const getReviews = async () => {
-    const userReviews = userData?.managerMode
+    const userReviews = user?.managerMode
       ? await getRepositoriesReviews(repositories)
-      : await getUserAssignedReviews(userData?.login as string);
+      : await getUserAssignedReviews(user?.login as string);
 
     setReviews(userReviews);
 
@@ -70,7 +70,7 @@ const ReviewsTabScreen = ({}: IReviewsTab) => {
   // Fetch repositories actions
   React.useEffect(() => {
     getReviews();
-  }, [repositories, userData?.managerMode]);
+  }, [repositories, user?.managerMode]);
 
   return (
     <ScrollView

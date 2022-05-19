@@ -17,7 +17,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import appDistribution, {
   FirebaseAppDistributionTypes,
 } from '@react-native-firebase/app-distribution';
-import {useUserData} from 'hooks/useUserData';
 import {AppStackParamsList, GitWatchUser, TabStackParamsList} from 'types';
 import AppHeader from 'components/AppHeader';
 import {
@@ -33,6 +32,7 @@ import {
   RepositoriesIcon,
   TermsIcon,
 } from 'components/Icons';
+import useStore from 'store';
 
 type Props = CompositeScreenProps<
   NativeStackScreenProps<TabStackParamsList, 'Settings'>,
@@ -43,7 +43,10 @@ type NavigationProps = Props['navigation'];
 
 function SettingsScreen() {
   const {navigate} = useNavigation<NavigationProps>();
-  const {data, setUser} = useUserData<GitWatchUser>();
+  const {user, setUser} = useStore(state => ({
+    user: state.user,
+    setUser: state.setUser,
+  }));
 
   const bottomSheetRef = React.useRef<BottomSheet>(null);
 
@@ -52,7 +55,7 @@ function SettingsScreen() {
   const [loading, setLoading] = React.useState(false);
 
   const [enableManagerMode, setEnableManagerMode] = React.useState(
-    data?.managerMode,
+    user?.managerMode,
   );
 
   const [appUpdatesEnabled, setAppUpdatesEnabled] = React.useState(false);
@@ -90,7 +93,7 @@ function SettingsScreen() {
       const updatesAlertEnabled = await appDistribution().isTesterSignedIn();
       setAppUpdatesEnabled(updatesAlertEnabled);
 
-      await firestore().collection('Users').doc(data?.id).update({
+      await firestore().collection('Users').doc(user?.id).update({
         appUpdatesEnabled: updatesAlertEnabled,
       });
     } catch (e) {
@@ -107,7 +110,7 @@ function SettingsScreen() {
     // update Firestore user data
     firestore()
       .collection('Users')
-      .doc(data?.id)
+      .doc(user?.id)
       .update({
         managerMode: enabled,
       })
@@ -205,7 +208,7 @@ function SettingsScreen() {
             marginVertical: 24,
           }}>
           <Image
-            source={{uri: data!.avatarUrl as string}}
+            source={{uri: user!.avatarUrl as string}}
             style={{
               width: 75,
               height: 75,
@@ -216,8 +219,8 @@ function SettingsScreen() {
             }}
           />
 
-          <Text category="s1">{data?.login}</Text>
-          <Text category="c1">{data?.email}</Text>
+          <Text category="s1">{user?.login}</Text>
+          <Text category="c1">{user?.email}</Text>
         </View>
 
         <View>
@@ -236,7 +239,7 @@ function SettingsScreen() {
           <Divider />
           <ListItem
             title="Your location"
-            description={data!.location ?? 'No location found'}
+            description={user!.location ?? 'No location found'}
             accessoryLeft={LocationIcon}
             // accessoryRight={ChevronIcon}
             disabled

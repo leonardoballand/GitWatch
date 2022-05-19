@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Image, ScrollView, Platform} from 'react-native';
+import {View, Image, ScrollView, Platform, FlatList} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -9,13 +9,13 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import firestore from '@react-native-firebase/firestore';
 import appDistribution from '@react-native-firebase/app-distribution';
 import messaging from '@react-native-firebase/messaging';
-import {useUserData} from 'hooks/useUserData';
-import {AppStackParamsList, GitWatchUser} from 'types';
+import {AppStackParamsList} from 'types';
 import useToggleStates from 'hooks/useToggleStates';
 import {GQLRepository} from 'graphql/schema';
 import {ActionCompletedIcon} from 'components/Icons';
 
 import styles from './index.style';
+import useStore from 'store';
 
 type Slide = {
   key:
@@ -81,7 +81,10 @@ type NavigationProps = Props['navigation'];
 function ConfigurationScreen() {
   const {params} = useRoute<RouteProps>();
   const {goBack} = useNavigation<NavigationProps>();
-  const {data: userData, setUser} = useUserData<GitWatchUser>();
+  const {user, setUser} = useStore(state => ({
+    user: state.user,
+    setUser: state.setUser,
+  }));
 
   const initialRepositories: {[key: string]: boolean} = {};
 
@@ -125,12 +128,12 @@ function ConfigurationScreen() {
 
       if (userSigned) {
         permissionsToggles.onChange('appUpdatesEnabled', true);
-        await firestore().collection('Users').doc(userData?.id).update({
+        await firestore().collection('Users').doc(user?.id).update({
           appUpdatesEnabled: true,
         });
       } else {
         await appDistribution().signInTester();
-        await firestore().collection('Users').doc(userData?.id).update({
+        await firestore().collection('Users').doc(user?.id).update({
           appUpdatesEnabled: true,
         });
       }
@@ -145,7 +148,7 @@ function ConfigurationScreen() {
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-    await firestore().collection('Users').doc(userData?.id).update({
+    await firestore().collection('Users').doc(user?.id).update({
       notifications: enabled,
     });
   };
@@ -266,15 +269,9 @@ function ConfigurationScreen() {
     );
   };
 
-  const renderPickList = (
-    item: Slide,
-    pickItems: GQLRepository[] | string[],
-  ) => {
+  const renderStickyHeader = (item: Slide) => {
     return (
-      <ScrollView
-        style={{flexGrow: 1, backgroundColor: 'white'}}
-        contentContainerStyle={styles.slide}
-        alwaysBounceVertical={false}>
+      <View style={{marginBottom: 16, backgroundColor: 'white'}}>
         <Image style={styles.image} source={{uri: item.image}} />
 
         <View style={{marginHorizontal: 16}}>
@@ -297,43 +294,62 @@ function ConfigurationScreen() {
             {organizationsToggles.allChecked ? 'Unselect All' : 'Select All'}
           </Button>
         )}
+      </View>
+    );
+  };
 
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'flex-start',
-            alignItems: 'flex-start',
-            marginTop: 16,
-          }}>
-          {item.key === 'repositories' &&
-            pickItems.map((pickItem: GQLRepository) => (
-              <Toggle
-                key={pickItem.id}
-                style={styles.toggle}
-                status="primary"
-                checked={repositoriesToggles.checked[pickItem.name]}
-                onChange={checked =>
-                  repositoriesToggles.onChange(pickItem.name, checked)
-                }>
-                <Text>{pickItem.name}</Text>
-              </Toggle>
-            ))}
+  const renderPickListItem = (
+    slide: string,
+    item: GQLRepository[] | string[],
+  ) => {
+    if (slide === 'repositories') {
+      return (
+        <Toggle
+          key={item.id}
+          style={styles.toggle}
+          status="primary"
+          checked={repositoriesToggles.checked[item.name]}
+          onChange={checked =>
+            repositoriesToggles.onChange(item.name, checked)
+          }>
+          <Text>{item.name}</Text>
+        </Toggle>
+      );
+    }
 
-          {item.key === 'organizations' &&
-            pickItems.map(pickItem => (
-              <Toggle
-                key={pickItem}
-                style={styles.toggle}
-                status="primary"
-                checked={organizationsToggles.checked[pickItem]}
-                onChange={checked =>
-                  organizationsToggles.onChange(pickItem, checked)
-                }>
-                {String(pickItem).toUpperCase()}
-              </Toggle>
-            ))}
-        </View>
-      </ScrollView>
+    if (slide === 'organizations') {
+      return (
+        <Toggle
+          key={item}
+          style={styles.toggle}
+          status="primary"
+          checked={organizationsToggles.checked[item]}
+          onChange={checked => organizationsToggles.onChange(item, checked)}>
+          {String(item).toUpperCase()}
+        </Toggle>
+      );
+    }
+
+    return null;
+  };
+
+  const renderPickList = (
+    item: Slide,
+    pickItems: GQLRepository[] | string[],
+  ) => {
+    return (
+      <FlatList
+        style={{flex: 1, backgroundColor: 'white'}}
+        contentContainerStyle={styles.slide}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={() => renderStickyHeader(item)}
+        data={pickItems}
+        extraData={item}
+        renderItem={({item: listItem}) =>
+          renderPickListItem(item.key, listItem)
+        }
+        stickyHeaderIndices={[0]}
+      />
     );
   };
 
@@ -417,6 +433,8 @@ function ConfigurationScreen() {
         'technical lead',
       ].includes(role);
 
+      console.log('userid', userId);
+
       // update firestore
       await firestore().collection('Repositories').doc(userId).update({
         repositories,
@@ -440,7 +458,11 @@ function ConfigurationScreen() {
       goBack();
     } catch (e) {
       // error => display toast
-      console.error('Configuration error', e);
+      console.error('Configuration error', e.code, e.message);
+
+      if (e.code.includes('firestore/not-found')) {
+        auth().signOut();
+      }
     } finally {
       setLoading(false);
     }

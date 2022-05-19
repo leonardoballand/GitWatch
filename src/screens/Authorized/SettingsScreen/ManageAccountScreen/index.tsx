@@ -16,9 +16,9 @@ import {GQLRepository} from 'graphql/schema';
 import {AppStackParamsList, GitWatchUser} from 'types';
 import {CloseIcon} from 'components/Icons';
 import AppHeader from 'components/AppHeader';
-import {useUserData} from 'hooks/useUserData';
 
 import styles from './index.style';
+import useStore from 'store';
 
 interface IProps {
   data: any;
@@ -33,13 +33,14 @@ type NavigationProps = Props['navigation'];
 
 function ManageAccountScreen() {
   const {goBack} = useNavigation<NavigationProps>();
-  const {data} = useUserData();
+  const {user, setUser} = useStore(state => ({
+    user: state.user,
+    setUser: state.setUser,
+  }));
 
   const bottomSheetRef = React.useRef<BottomSheet>(null);
 
   const initialSnapPoints = React.useMemo(() => ['30%', 'CONTENT_HEIGHT'], []);
-
-  const [user, setUser] = React.useState<GitWatchUser>();
 
   const [errorMsg, setErrorMsg] = React.useState('');
 
@@ -61,7 +62,7 @@ function ManageAccountScreen() {
 
     const userData = userFirebaseData.data() as GitWatchUser;
 
-    setUser(userData);
+    setUser(null, userData);
   };
 
   /**
@@ -109,7 +110,7 @@ function ManageAccountScreen() {
       await auth().signOut();
     } catch (e) {
       if (String(e).includes('auth/requires-recent-login')) {
-        await auth().signInWithEmailAndPassword(data?.email!, '123456789!');
+        await auth().signInWithEmailAndPassword(user?.email!, '123456789!');
         await auth().currentUser?.delete();
         await auth().signOut();
       }
@@ -132,7 +133,7 @@ function ManageAccountScreen() {
       .collection('Users')
       .doc(userId)
       .onSnapshot(documentSnapshot => {
-        setUser(documentSnapshot.data() as GitWatchUser);
+        setUser(null, documentSnapshot.data() as GitWatchUser);
       });
 
     // Stop listening for updates when no longer required

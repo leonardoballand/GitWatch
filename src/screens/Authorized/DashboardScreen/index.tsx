@@ -5,7 +5,6 @@ import {useTheme} from '@ui-kitten/components';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import AppHeader from 'components/AppHeader';
 import {GitWatchUser, TabStackParamsList} from 'types';
-import {useUserData} from 'hooks/useUserData';
 import {
   PullRequestIcon,
   ReviewIcon,
@@ -24,6 +23,7 @@ type NavigationProps = Props['navigation'];
 const TopTab = createMaterialTopTabNavigator();
 
 import ReviewsTabScreen from './ReviewsTabScreen';
+import useStore from 'store';
 
 function MyTabBar({state, descriptors, navigation, position}) {
   const topTabRef = React.useRef<ScrollView>();
@@ -144,7 +144,7 @@ function DashboardTabs() {
 }
 
 function DashboardScreen() {
-  const {data: userData} = useUserData<GitWatchUser>();
+  const {user} = useStore(state => ({user: state.user}));
   const theme = useTheme();
 
   const openNotifications = () => {};
@@ -167,7 +167,7 @@ function DashboardScreen() {
   return (
     <View style={{flex: 1, backgroundColor: '#F8F8F8'}}>
       <AppHeader
-        title={`Hi ${userData?.firstName}`}
+        title={`Hi ${user?.firstName}`}
         description="Let's watch your repositories"
         level={1}
         color="#F8F8F8"

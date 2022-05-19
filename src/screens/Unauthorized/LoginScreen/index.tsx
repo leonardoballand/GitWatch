@@ -14,13 +14,13 @@ import firestore from '@react-native-firebase/firestore';
 import {useRoute} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useUserData} from 'hooks/useUserData';
 import {config} from 'utils/OAuthManager';
 import getUserIssues from 'api/github/getUserIssues';
 import getUserData from 'api/github/getUserData';
 import {GQLIssue, GQLRepository, GQLUser} from 'graphql/schema';
 import {AppStackParamsList, GitWatchUser} from 'types';
 import styles from './index.style';
+import useStore from 'store';
 
 const GithubIcon = (props: any) => <Icon {...props} name="github" />;
 
@@ -32,7 +32,10 @@ type NavigationProps = Props['navigation'];
 function LoginScreen() {
   const theme = useTheme();
   const {params} = useRoute<RouteProps>();
-  const {data: userData, setUser} = useUserData<GitWatchUser>();
+  const {userData, setUser} = useStore(state => ({
+    userData: state.user,
+    setUser: state.setUser,
+  }));
 
   let state = 'Fytymlk567888dqs6575432fdfdfg!!!';
 
@@ -56,7 +59,8 @@ function LoginScreen() {
         id: userCreated.user.uid,
         isNewUser: userCreated.additionalUserInfo?.isNewUser,
       };
-    } catch (error: any) {
+    } catch (error) {
+      console.log('error', error);
       if (error.code === 'auth/email-already-in-use') {
         const userSigned = await auth().signInWithEmailAndPassword(
           email,

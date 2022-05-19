@@ -57,6 +57,7 @@
 	<string></string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Nunito-VariableFont_wght.ttf</string>
 		<string>MaterialIcons.ttf</string>
 		<string>MaterialCommunityIcons.ttf</string>
 		<string>Octicons.ttf</string>
