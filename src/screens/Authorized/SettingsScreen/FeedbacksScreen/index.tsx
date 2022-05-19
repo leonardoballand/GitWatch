@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {Input, Button, Text} from '@ui-kitten/components';
+import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/core';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {useFormik} from 'formik';
@@ -11,11 +12,10 @@ import {CloseIcon} from 'components/Icons';
 import AppHeader from 'components/AppHeader';
 import getAppIssueTemplates from 'api/gitwatch/getAppIssueTemplates';
 import {GQLIssueTemplate} from 'graphql/schema';
-import Toast from 'react-native-toast-message';
 
-import styles from './index.style';
 import createAppIssue from 'api/gitwatch/createAppIssue';
 import openExternalLink from 'utils/openExternalLink';
+import styles from './index.style';
 
 interface IProps {}
 
@@ -74,6 +74,12 @@ function FeedbacksScreen() {
         setIssueUrl(url);
       } catch (e) {
         console.log('onsubmit error', e);
+
+        Toast.show({
+          type: 'error',
+          text1: 'Oooooops!',
+          text2: 'Could not send feedback. Try again!',
+        });
       }
     },
   });

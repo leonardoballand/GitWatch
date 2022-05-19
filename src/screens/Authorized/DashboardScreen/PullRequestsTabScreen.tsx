@@ -3,6 +3,7 @@ import {RefreshControl, ScrollView} from 'react-native';
 import {Text} from '@ui-kitten/components';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import Toast from 'react-native-toast-message';
 import {DraftIcon, PullRequestIcon} from 'components/Icons';
 import openExternalLink from 'utils/openExternalLink';
 import {
@@ -26,12 +27,26 @@ const PullRequestsTabScreen = ({}: IPullRequestsTab) => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const getPullRequests = async () => {
-    if (user?.managerMode) {
-      const pullRequests = await getRepositoriesPullRequests(repositories);
-      setPullRequests(pullRequests);
-    } else {
-      const userPullRequests = await getUserPullRequests(user?.login as string);
-      setPullRequests(userPullRequests);
+    try {
+      if (user?.managerMode) {
+        const pullRequests = await getRepositoriesPullRequests(repositories);
+        setPullRequests(pullRequests);
+      } else {
+        const userPullRequests = await getUserPullRequests(
+          user?.login as string,
+        );
+        setPullRequests(userPullRequests);
+      }
+
+      return;
+    } catch (err) {
+      console.log('pullrequests error', err);
+
+      Toast.show({
+        type: 'error',
+        text1: 'An error occurred',
+        text2: 'Could not get pull requests.',
+      });
     }
   };
 
@@ -39,9 +54,17 @@ const PullRequestsTabScreen = ({}: IPullRequestsTab) => {
     setRefreshing(true);
 
     try {
-      await Promise.all([getPullRequests]).finally(() => setRefreshing(false));
+      await Promise.all([getPullRequests]);
     } catch (e) {
       console.error(e);
+
+      Toast.show({
+        type: 'error',
+        text1: 'An error occurred',
+        text2: 'Could not refresh pull requests.',
+      });
+    } finally {
+      setRefreshing(false);
     }
   };
 

@@ -3,6 +3,7 @@ import {View, Image, ScrollView, Platform, FlatList} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Toast from 'react-native-toast-message';
 import {Toggle, Text, Button, Spinner, CheckBox} from '@ui-kitten/components';
 import auth from '@react-native-firebase/auth';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -139,6 +140,12 @@ function ConfigurationScreen() {
       }
     } catch (e) {
       console.log('enableAppUpdates error', e);
+
+      Toast.show({
+        type: 'error',
+        text1: 'Ooooops!',
+        text2: 'Could not enable app updates. Try again!',
+      });
     }
   };
 
@@ -461,6 +468,12 @@ function ConfigurationScreen() {
       console.error('Configuration error', e.code, e.message);
 
       if (e.code.includes('firestore/not-found')) {
+        Toast.show({
+          type: 'error',
+          text1: 'Ooooops!',
+          text2:
+            'Sorry, it seems like something gone wrong. Please retry to sign-in!',
+        });
         auth().signOut();
       }
     } finally {

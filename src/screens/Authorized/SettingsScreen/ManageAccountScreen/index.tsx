@@ -3,6 +3,7 @@ import {Platform, TouchableOpacity, View} from 'react-native';
 import {Button, Text} from '@ui-kitten/components';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import Toast from 'react-native-toast-message';
 import appDistribution from '@react-native-firebase/app-distribution';
 import {useNavigation} from '@react-navigation/core';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -113,6 +114,12 @@ function ManageAccountScreen() {
         await auth().signInWithEmailAndPassword(user?.email!, '123456789!');
         await auth().currentUser?.delete();
         await auth().signOut();
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Ooooooops!',
+          text2: 'Could not remove account. Try to sign-in again and retry.',
+        });
       }
     } finally {
       bottomSheetRef.current?.forceClose();
