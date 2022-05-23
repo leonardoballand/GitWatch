@@ -10,8 +10,8 @@ env:
 
 jobs:
   list-deps:
-    name: Setup CI
-    runs-on: [ubuntu-latest, self-hosted, macos, mobile]
+    name: List dependencies
+    runs-on: ubuntu-latest
 
     steps:
       - name: 🛑 Cancel Previous Runs
