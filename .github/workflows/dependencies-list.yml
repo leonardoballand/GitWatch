@@ -29,6 +29,7 @@ jobs:
 
       - name: Get list
         run: |
+          npm -v
           npm list --json >> dependencies.json
 
       - name: Upload artifact
