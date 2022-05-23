@@ -1,0 +1,38 @@
+name: List dependencies
+defaults:
+  run:
+    shell: bash -ieo pipefail {0}
+
+on: workflow_dispatch
+
+env:
+  LANG: 'en_US.UTF-8'
+
+jobs:
+  list-deps:
+    name: Setup CI
+    runs-on: [ubuntu-latest, self-hosted, macos, mobile]
+
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.0
+
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: ⚙ Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Get list
+        run: |
+          npm list --json >> dependencies.json
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependencies-list.json
+          path: dependencies.json

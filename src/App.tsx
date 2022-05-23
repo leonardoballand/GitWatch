@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import RNBootSplash from 'react-native-bootsplash';
@@ -41,8 +41,8 @@ const App = withProviders(({}: IProps) => {
   useFirebaseUpdates(openAppUpdateModal);
 
   // Handle user state changes
-  const onAuthStateChanged = (user: any) => {
-    if (!user) {
+  const onAuthStateChanged = (firebaseUser: any) => {
+    if (!firebaseUser) {
       // remove user data
       deleteUser();
     }
@@ -99,7 +99,7 @@ const App = withProviders(({}: IProps) => {
       screenOptions={{
         headerShown: false,
       }}>
-      {auth().currentUser ? (
+      {auth().currentUser && user ? (
         <>
           <Screen
             name="Home"
